@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timber Market Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #1a3a2a;
+    --forest-mid: #2d5a3d;
+    --forest-light: #4a8060;
+    --bark: #6b4226;
+    --bark-light: #a0674a;
+    --cream: #f5f0e8;
+    --cream-dark: #ebe4d6;
+    --gold: #c8973a;
+    --gold-light: #e8b85a;
+    --text-dark: #1a1a1a;
+    --text-mid: #4a4a4a;
+    --text-light: #8a8a8a;
+    --white: #ffffff;
+    --shadow: 0 4px 24px rgba(26,58,42,0.12);
+    --shadow-lg: 0 12px 48px rgba(26,58,42,0.18);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 80% 0%, rgba(74,128,96,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 0% 100%, rgba(107,66,38,0.06) 0%, transparent 50%);
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--forest);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.25);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-icon {
+    width: 38px;
+    height: 38px;
+    background: var(--gold);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+
+  .logo-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    color: var(--cream);
+    letter-spacing: 0.01em;
+  }
+
+  .logo-sub {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+
+  /* Language tabs */
+  .lang-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 10px 24px;
+    background: rgba(0,0,0,0.15);
+  }
+
+  .lang-tab {
+    padding: 6px 16px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    color: rgba(255,255,255,0.55);
+    background: transparent;
+    letter-spacing: 0.03em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .lang-tab:hover {
+    color: var(--cream);
+    background: rgba(255,255,255,0.08);
+  }
+
+  .lang-tab.active {
+    background: var(--gold);
+    color: var(--forest);
+    font-weight: 600;
+    border-color: var(--gold-light);
+  }
+
+  .lang-flag { font-size: 1rem; }
+
+  /* ── MAIN ── */
+  .main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--forest);
+    margin-bottom: 6px;
+  }
+
+  .page-subtitle {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 32px;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 36px;
+    position: relative;
+  }
+
+  .progress-track {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    height: 2px;
+    background: var(--cream-dark);
+    z-index: 0;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--gold);
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .step-dots {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+
+  .step-dot-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .step-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--cream-dark);
+    background: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-light);
+    transition: var(--transition);
+    cursor: pointer;
+  }
+
+  .step-dot.active {
+    border-color: var(--gold);
+    background: var(--gold);
+    color: var(--white);
+    box-shadow: 0 0 0 4px rgba(200,151,58,0.2);
+  }
+
+  .step-dot.done {
+    border-color: var(--forest-light);
+    background: var(--forest-light);
+    color: var(--white);
+  }
+
+  .step-label {
+    font-size: 0.68rem;
+    color: var(--text-light);
+    text-align: center;
+    max-width: 64px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .step-label.active { color: var(--gold); font-weight: 600; }
+  .step-label.done { color: var(--forest-light); }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+    border: 1px solid rgba(26,58,42,0.06);
+    animation: slideIn 0.35s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    color: var(--forest);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-icon {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--forest), var(--forest-light));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  /* ── FORM ELEMENTS ── */
+  .field-group {
+    margin-bottom: 20px;
+  }
+
+  label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-mid);
+    margin-bottom: 7px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .optional-badge {
+    font-size: 0.68rem;
+    background: var(--cream-dark);
+    color: var(--text-light);
+    padding: 2px 7px;
+    border-radius: 4px;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+    margin-left: 6px;
+  }
+
+  select, input[type="text"], input[type="number"], textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--cream-dark);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    background: var(--cream);
+    transition: var(--transition);
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+  }
+
+  select:focus, input:focus, textarea:focus {
+    border-color: var(--forest-light);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(74,128,96,0.12);
+  }
+
+  .select-wrap {
+    position: relative;
+  }
+
+  .select-wrap::after {
+    content: '▾';
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    pointer-events: none;
+    font-size: 0.9rem;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 90px;
+    line-height: 1.5;
+  }
+
+  /* Type toggle (Purchase / Sale) */
+  .type-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .type-btn {
+    padding: 16px 12px;
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--cream-dark);
+    background: var(--cream);
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-mid);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .type-btn .type-icon { font-size: 1.8rem; }
+
+  .type-btn.selected-buy {
+    border-color: var(--forest);
+    background: var(--forest);
+    color: var(--white);
+    box-shadow: 0 4px 16px rgba(26,58,42,0.25);
+  }
+
+  .type-btn.selected-sell {
+    border-color: var(--bark);
+    background: var(--bark);
+    color: var(--white);
+    box-shadow: 0 4px 16px rgba(107,66,38,0.25);
+  }
+
+  .type-btn:hover:not(.selected-buy):not(.selected-sell) {
+    border-color: var(--forest-light);
+    background: var(--white);
+  }
+
+  /* Two-column grid */
+  .fields-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 500px) {
+    .fields-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── NAVIGATION BUTTONS ── */
+  .nav-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+  }
+
+  .btn-back {
+    padding: 13px 24px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--cream-dark);
+    background: var(--white);
+    color: var(--text-mid);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .btn-back:hover { border-color: var(--text-mid); }
+
+  .btn-next {
+    flex: 1;
+    padding: 14px 24px;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: linear-gradient(135deg, var(--forest), var(--forest-light));
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    letter-spacing: 0.02em;
+    box-shadow: 0 4px 16px rgba(26,58,42,0.3);
+  }
+
+  .btn-next:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(26,58,42,0.4);
+  }
+
+  .btn-next:active { transform: translateY(0); }
+
+  .btn-submit {
+    flex: 1;
+    padding: 16px 24px;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--forest);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    letter-spacing: 0.02em;
+    box-shadow: 0 4px 16px rgba(200,151,58,0.4);
+  }
+
+  .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(200,151,58,0.5);
+  }
+
+  .btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* ── REVIEW STEP ── */
+  .review-grid {
+    display: grid;
+    gap: 8px;
+  }
+
+  .review-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: var(--cream);
+  }
+
+  .review-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    min-width: 120px;
+    padding-top: 2px;
+  }
+
+  .review-value {
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    font-weight: 500;
+    flex: 1;
+  }
+
+  .type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .type-badge.buy { background: var(--forest); color: var(--white); }
+  .type-badge.sell { background: var(--bark); color: var(--white); }
+
+  /* ── SUCCESS SCREEN ── */
+  .success-screen {
+    text-align: center;
+    padding: 48px 24px;
+  }
+
+  .success-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--forest), var(--forest-light));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    margin: 0 auto 24px;
+    box-shadow: 0 8px 24px rgba(26,58,42,0.3);
+    animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes popIn {
+    from { transform: scale(0); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+
+  .success-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--forest);
+    margin-bottom: 10px;
+  }
+
+  .success-sub {
+    color: var(--text-light);
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  .btn-new {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: linear-gradient(135deg, var(--forest), var(--forest-light));
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 4px 16px rgba(26,58,42,0.3);
+  }
+
+  .btn-new:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(26,58,42,0.4);
+  }
+
+  /* ── ERROR / INFO ── */
+  .error-msg {
+    color: #c0392b;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    display: none;
+  }
+
+  .info-note {
+    background: rgba(200,151,58,0.1);
+    border-left: 3px solid var(--gold);
+    padding: 10px 14px;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.82rem;
+    color: var(--text-mid);
+    margin-top: 16px;
+    line-height: 1.5;
+  }
+
+  /* Loading spinner */
+  .spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(26,58,42,0.3);
+    border-top-color: var(--forest);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .hidden { display: none !important; }
+
+  /* SharePoint config notice */
+  .sp-config {
+    background: var(--forest);
+    color: rgba(255,255,255,0.85);
+    padding: 14px 20px;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  .sp-config code {
+    background: rgba(255,255,255,0.15);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.8rem;
+  }
+
+  .sp-config a {
+    color: var(--gold-light);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  /* Modal for SP config */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 28px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .modal h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--forest);
+    margin-bottom: 16px;
+  }
+
+  .modal p { font-size: 0.88rem; color: var(--text-mid); line-height: 1.6; margin-bottom: 12px; }
+  .modal code {
+    display: block;
+    background: var(--cream);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    margin: 8px 0 12px;
+    line-height: 1.5;
+    color: var(--forest);
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  .modal-close {
+    margin-top: 16px;
+    padding: 10px 20px;
+    background: var(--forest);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 480px) {
+    .main { padding: 20px 14px 60px; }
+    .card { padding: 20px 16px; }
+    .page-title { font-size: 1.5rem; }
+    .step-label { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SHAREPOINT CONFIG BANNER -->
+<div class="sp-config" id="spBanner">
+  ⚠️ SharePoint-integration kræver konfiguration. <a onclick="document.getElementById('spModal').classList.add('open')">Klik her for opsætningsvejledning</a>. Indtastede data gemmes foreløbigt lokalt.
+</div>
+
+<!-- SHAREPOINT SETUP MODAL -->
+<div class="modal-overlay" id="spModal">
+  <div class="modal">
+    <h3>🔧 SharePoint Integration Opsætning</h3>
+    <p>For at sende data direkte til dit SharePoint Excel-ark skal du registrere en Azure AD app og sætte de rigtige nøgler ind i koden:</p>
+    <p><strong>1.</strong> Gå til <strong>portal.azure.com</strong> → Azure Active Directory → App Registrations → New Registration</p>
+    <p><strong>2.</strong> Tilføj disse API-permissions: <em>Files.ReadWrite.All</em> og <em>Sites.ReadWrite.All</em></p>
+    <p><strong>3.</strong> Opdater disse variabler øverst i script-sektionen:</p>
+    <code>const SP_TENANT_ID = 'din-tenant-id';
+const SP_CLIENT_ID  = 'din-client-id';
+const SP_SITE_URL   = 'https://dinvirksomhed.sharepoint.com/sites/DinSite';
+const SP_FILE_PATH  = '/Shared Documents/Market_info_test.xlsx';</code>
+    <p>💡 Alternativt kan du bruge <strong>Power Automate</strong>: Opret et HTTP-trigger flow der modtager JSON og skriver til Excel. Indsæt flow-URL'en i variablen <code>POWER_AUTOMATE_URL</code>.</p>
+    <button class="modal-close" onclick="document.getElementById('spModal').classList.remove('open')">Forstået</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-top">
+    <div class="logo">
+      <div class="logo-icon">🌲</div>
+      <div>
+        <div class="logo-text">Timber Market</div>
+        <div class="logo-sub">Market Intelligence Platform</div>
+      </div>
+    </div>
+    <div style="font-size:0.75rem; color:rgba(255,255,255,0.4);" id="headerDate"></div>
+  </div>
+  <div class="lang-tabs">
+    <button class="lang-tab active" data-lang="da" onclick="setLang('da')">
+      <span class="lang-flag">🇩🇰</span> Dansk
+    </button>
+    <button class="lang-tab" data-lang="de" onclick="setLang('de')">
+      <span class="lang-flag">🇩🇪</span> Deutsch
+    </button>
+    <button class="lang-tab" data-lang="fr" onclick="setLang('fr')">
+      <span class="lang-flag">🇫🇷</span> Français
+    </button>
+    <button class="lang-tab" data-lang="en" onclick="setLang('en')">
+      <span class="lang-flag">🇬🇧</span> English
+    </button>
+  </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+  <!-- PAGE TITLE -->
+  <div id="mainTitle">
+    <h1 class="page-title" id="ttl-main">Registrer markedsinformation</h1>
+    <p class="page-subtitle" id="ttl-sub">Udfyld formularen nedenfor for at registrere en købs- eller salgsmulighed</p>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap" id="progressSection">
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="step-dots">
+      <div class="step-dot-wrap">
+        <div class="step-dot active" id="dot1">1</div>
+        <div class="step-label active" id="lbl1" data-i18n="step1">Info</div>
+      </div>
+      <div class="step-dot-wrap">
+        <div class="step-dot" id="dot2">2</div>
+        <div class="step-label" id="lbl2" data-i18n="step2">Detaljer</div>
+      </div>
+      <div class="step-dot-wrap">
+        <div class="step-dot" id="dot3">3</div>
+        <div class="step-label" id="lbl3" data-i18n="step3">Økonomi</div>
+      </div>
+      <div class="step-dot-wrap">
+        <div class="step-dot" id="dot4">4</div>
+        <div class="step-label" id="lbl4" data-i18n="step4">Gennemse</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 1: Basic Info ═══ -->
+  <div id="step1">
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon">👤</div>
+        <span id="s1-title">Grundlæggende information</span>
+      </div>
+
+      <div class="field-group">
+        <label id="lbl-employee">Medarbejder</label>
+        <div class="select-wrap">
+          <select id="fEmployee">
+            <option value="">— Vælg medarbejder —</option>
+            <option value="Tim">Tim</option>
+            <option value="Henrik">Henrik</option>
+            <option value="Matthias V">Matthias V</option>
+            <option value="Mathias J">Mathias J</option>
+            <option value="Ole">Ole</option>
+            <option value="David">David</option>
+            <option value="Pierre">Pierre</option>
+            <option value="Gavin">Gavin</option>
+            <option value="Lisa">Lisa</option>
+            <option value="Sedat">Sedat</option>
+          </select>
+        </div>
+        <div class="error-msg" id="err-employee">Vælg venligst en medarbejder</div>
+      </div>
+
+      <div class="field-group">
+        <label id="lbl-type">Type</label>
+        <div class="type-toggle">
+          <button class="type-btn" id="btnBuy" onclick="selectType('buy')">
+            <span class="type-icon">🛒</span>
+            <span id="buyLabel">Køb</span>
+          </button>
+          <button class="type-btn" id="btnSell" onclick="selectType('sell')">
+            <span class="type-icon">📦</span>
+            <span id="sellLabel">Salg</span>
+          </button>
+        </div>
+        <div class="error-msg" id="err-type">Vælg venligst type</div>
+      </div>
+
+      <div class="field-group">
+        <label id="lbl-month">Levering (ca. måned)</label>
+        <div class="select-wrap">
+          <select id="fMonth">
+            <option value="">— Vælg måned —</option>
+            <option value="Januar">Januar</option>
+            <option value="Februar">Februar</option>
+            <option value="Marts">Marts</option>
+            <option value="April">April</option>
+            <option value="Maj">Maj</option>
+            <option value="Juni">Juni</option>
+            <option value="Juli">Juli</option>
+            <option value="August">August</option>
+            <option value="September">September</option>
+            <option value="Oktober">Oktober</option>
+            <option value="November">November</option>
+            <option value="December">December</option>
+          </select>
+        </div>
+        <div class="error-msg" id="err-month">Vælg venligst en måned</div>
+      </div>
+
+      <div class="field-group">
+        <label id="lbl-species">Træart</label>
+        <div class="select-wrap">
+          <select id="fSpecies">
+            <option value="">— Vælg træart —</option>
+            <option value="Eg">Eg</option>
+            <option value="Bøg">Bøg</option>
+            <option value="Ask">Ask</option>
+            <option value="Ahorn">Ahorn</option>
+            <option value="Nåletræ">Nåletræ</option>
+          </select>
+        </div>
+        <div class="error-msg" id="err-species">Vælg venligst en træart</div>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-next" onclick="goStep(2)" id="btn1Next">Næste →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 2: Details (Col F-L) ═══ -->
+  <div id="step2" class="hidden">
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon">📋</div>
+        <span id="s2-title">Produktdetaljer</span>
+      </div>
+
+      <div class="fields-grid">
+        <div class="field-group">
+          <label id="lbl-quality">Kvalitet <span class="optional-badge" id="opt1">valgfri</span></label>
+          <input type="text" id="fQuality" placeholder="F.eks. A/B, Prime...">
+        </div>
+        <div class="field-group">
+          <label id="lbl-grade">Measurement type <span class="optional-badge" id="opt2">valgfri</span></label>
+          <input type="text" id="fGrade" placeholder="F.eks. 1. sort, ABC...">
+        </div>
+      </div>
+
+      <div class="fields-grid">
+        <div class="field-group">
+          <label id="lbl-thickness">Diameter <span class="optional-badge" id="opt3">valgfri</span></label>
+          <input type="text" id="fThickness" placeholder="F.eks. 30, 40, 50 cm...">
+        </div>
+        <div class="field-group">
+          <label id="lbl-width">Freetrim <span class="optional-badge" id="opt4">valgfri</span></label>
+          <input type="text" id="fWidth" placeholder="F.eks. 3, 5...">
+        </div>
+      </div>
+
+      <div class="fields-grid">
+        <div class="field-group">
+          <label id="lbl-length">Længde (mm) <span class="optional-badge" id="opt5">valgfri</span></label>
+          <input type="text" id="fLength" placeholder="F.eks. 2000, 3000...">
+        </div>
+        <div class="field-group">
+          <label id="lbl-volume">Mængde/Volumen <span class="optional-badge" id="opt6">valgfri</span></label>
+          <input type="text" id="fVolume" placeholder="F.eks. 100 m³...">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label id="lbl-drying">Bark deduction <span class="optional-badge" id="opt7">valgfri</span></label>
+        <input type="text" id="fDrying" placeholder="F.eks. 5%, 10%...">
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-back" onclick="goStep(1)">← <span id="backBtn1">Tilbage</span></button>
+        <button class="btn-next" onclick="goStep(3)" id="btn2Next">Næste →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 3: Economics & Logistics ═══ -->
+  <div id="step3" class="hidden">
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon">💰</div>
+        <span id="s3-title">Pris & Logistik</span>
+      </div>
+
+      <div class="field-group">
+        <label id="lbl-price">Pris pr. enhed <span class="optional-badge" id="opt8">valgfri</span></label>
+        <input type="text" id="fPrice" placeholder="F.eks. 250 EUR/m³">
+      </div>
+
+      <div class="field-group">
+        <label id="lbl-location">Land & Lokation <span id="locationTypeLabel">(Afhentning)</span></label>
+        <input type="text" id="fLocation" placeholder="F.eks. Deutschland, Hamburg">
+        <div class="error-msg" id="err-location">Angiv venligst lokation</div>
+      </div>
+
+      <div class="field-group">
+        <label id="lbl-contact"><span id="contactTypeLabel">Leverandør</span> <span class="optional-badge" id="opt9">valgfri</span></label>
+        <input type="text" id="fContact" placeholder="Firmanavn eller kontaktperson">
+      </div>
+
+      <div class="field-group">
+        <label id="lbl-remarks">Bemærkninger <span class="optional-badge" id="opt10">valgfri</span></label>
+        <textarea id="fRemarks" placeholder="Yderligere information, specielle krav, etc."></textarea>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-back" onclick="goStep(2)">← <span id="backBtn2">Tilbage</span></button>
+        <button class="btn-next" onclick="goStep(4)" id="btn3Next">Gennemse →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 4: Review & Submit ═══ -->
+  <div id="step4" class="hidden">
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon">✅</div>
+        <span id="s4-title">Gennemse & Send</span>
+      </div>
+
+      <div class="review-grid" id="reviewGrid"></div>
+
+      <div class="info-note" id="reviewNote">
+        Kontroller venligst oplysningerne ovenfor. Klik på "Send" for at registrere oplysningerne i SharePoint.
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-back" onclick="goStep(3)">← <span id="backBtn3">Tilbage</span></button>
+        <button class="btn-submit" onclick="submitForm()" id="btnSubmit">
+          🚀 <span id="submitLabel">Send til SharePoint</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SUCCESS ═══ -->
+  <div id="stepSuccess" class="hidden">
+    <div class="card">
+      <div class="success-screen">
+        <div class="success-icon">✓</div>
+        <h2 class="success-title" id="successTitle">Registreret!</h2>
+        <p class="success-sub" id="successSub">Dine oplysninger er blevet gemt og sendt til SharePoint Excel-arket.<br>Tak for din indbetaling.</p>
+        <button class="btn-new" onclick="resetForm()">
+          ➕ <span id="newEntryLabel">Ny registrering</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+// ═══════════════════════════════════════════════════════
+// SHAREPOINT / POWER AUTOMATE CONFIGURATION
+// ═══════════════════════════════════════════════════════
+// Option A: Power Automate HTTP Trigger URL
+const POWER_AUTOMATE_URL = 'https://defaultf1c87e6cd35147309a521c45715423.c1.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/ede0bd0536c84bb58a932ab2ed67927f/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=8G97Zm_QWrYkOl-WKg422wQJBz47WHK0EfmdOAaIlrI'; // Power Automate URL
+
+// Option B: Microsoft Graph API (avanceret)
+const SP_TENANT_ID  = '';
+const SP_CLIENT_ID  = '';
+const SP_SITE_URL   = '';
+const SP_FILE_PATH  = '/Shared Documents/Market_info_test.xlsx';
+// ═══════════════════════════════════════════════════════
+
+// ── TRANSLATIONS ──────────────────────────────────────
+const i18n = {
+  da: {
+    'main-title': 'Registrer markedsinformation',
+    'main-sub':   'Udfyld formularen nedenfor for at registrere en købs- eller salgsmulighed',
+    'step1': 'Info', 'step2': 'Detaljer', 'step3': 'Økonomi', 'step4': 'Gennemse',
+    's1-title': 'Grundlæggende information',
+    's2-title': 'Produktdetaljer',
+    's3-title': 'Pris & Logistik',
+    's4-title': 'Gennemse & Send',
+    'lbl-employee': 'Medarbejder',
+    'lbl-type': 'Type',
+    'buyLabel': 'Køb', 'sellLabel': 'Salg',
+    'lbl-month': 'Levering (ca. måned)',
+    'lbl-species': 'Træart',
+    'lbl-quality': 'Kvalitet', 'lbl-grade': 'Sortering',
+    'lbl-thickness': 'Tykkelse (mm)', 'lbl-width': 'Bredde (mm)',
+    'lbl-length': 'Længde (mm)', 'lbl-volume': 'Mængde/Volumen',
+    'lbl-drying': 'Tørring',
+    'lbl-price': 'Pris pr. enhed',
+    'lbl-location': 'Land & Lokation',
+    'location-buy': '(Afhentning)', 'location-sell': '(Levering)',
+    'contact-buy': 'Leverandør', 'contact-sell': 'Kunde',
+    'lbl-contact': '', 'lbl-remarks': 'Bemærkninger',
+    'opt': 'valgfri',
+    'back': 'Tilbage', 'next': 'Næste', 'review-btn': 'Gennemse',
+    'submit': 'Send til SharePoint',
+    'review-note': 'Kontroller venligst oplysningerne ovenfor. Klik på "Send" for at registrere oplysningerne i SharePoint.',
+    'success-title': 'Registreret!',
+    'success-sub':   'Dine oplysninger er gemt og sendt til SharePoint-arket.\nTak for din registrering.',
+    'new-entry': 'Ny registrering',
+    'err-employee': 'Vælg venligst en medarbejder',
+    'err-type': 'Vælg venligst type (Køb/Salg)',
+    'err-month': 'Vælg venligst en måned',
+    'err-species': 'Vælg venligst en træart',
+    'err-location': 'Angiv venligst lokation',
+    'sending': 'Sender...',
+    'months': ['Januar','Februar','Marts','April','Maj','Juni','Juli','August','September','Oktober','November','December'],
+    'species': ['Eg','Bøg','Ask','Ahorn','Nåletræ'],
+    'drying-opts': ['Grøn / Rå','Lufttørret','Kammerovnstørret (KD)','Teknisk tørret'],
+    'drying-vals': ['Grøn/Rå','Lufttørret','Kammerovnstørret','Teknisk tørret'],
+    'emp-placeholder': '— Vælg medarbejder —',
+    'month-placeholder': '— Vælg måned —',
+    'species-placeholder': '— Vælg træart —',
+    'drying-placeholder': '— Vælg —',
+    // Review labels
+    'rv-date': 'Dato', 'rv-employee': 'Medarbejder', 'rv-type': 'Type',
+    'rv-month': 'Leveringsmåned', 'rv-species': 'Træart', 'rv-quality': 'Kvalitet',
+    'rv-grade': 'Sortering', 'rv-thickness': 'Tykkelse', 'rv-width': 'Bredde',
+    'rv-length': 'Længde', 'rv-volume': 'Mængde', 'rv-drying': 'Tørring',
+    'rv-price': 'Pris pr. enhed', 'rv-location': 'Lokation', 'rv-contact': 'Kontakt',
+    'rv-remarks': 'Bemærkninger', 'buy-badge': 'Køb', 'sell-badge': 'Salg',
+  },
+  de: {
+    'main-title': 'Marktinformation erfassen',
+    'main-sub':   'Füllen Sie das Formular aus, um eine Kauf- oder Verkaufsmöglichkeit zu erfassen',
+    'step1': 'Info', 'step2': 'Details', 'step3': 'Finanzen', 'step4': 'Überprüfen',
+    's1-title': 'Grundlegende Informationen',
+    's2-title': 'Produktdetails',
+    's3-title': 'Preis & Logistik',
+    's4-title': 'Überprüfen & Senden',
+    'lbl-employee': 'Mitarbeiter',
+    'lbl-type': 'Typ',
+    'buyLabel': 'Einkauf', 'sellLabel': 'Verkauf',
+    'lbl-month': 'Lieferung (ca. Monat)',
+    'lbl-species': 'Holzart',
+    'lbl-quality': 'Qualität', 'lbl-grade': 'Sortierung',
+    'lbl-thickness': 'Stärke (mm)', 'lbl-width': 'Breite (mm)',
+    'lbl-length': 'Länge (mm)', 'lbl-volume': 'Menge/Volumen',
+    'lbl-drying': 'Trocknung',
+    'lbl-price': 'Preis pro Einheit',
+    'lbl-location': 'Land & Standort',
+    'location-buy': '(Abholung)', 'location-sell': '(Lieferung)',
+    'contact-buy': 'Lieferant', 'contact-sell': 'Kunde',
+    'lbl-contact': '', 'lbl-remarks': 'Anmerkungen',
+    'opt': 'optional',
+    'back': 'Zurück', 'next': 'Weiter', 'review-btn': 'Überprüfen',
+    'submit': 'An SharePoint senden',
+    'review-note': 'Bitte überprüfen Sie die Angaben. Klicken Sie auf "Senden", um die Daten in SharePoint zu speichern.',
+    'success-title': 'Erfolgreich erfasst!',
+    'success-sub':   'Ihre Daten wurden gespeichert und an SharePoint übermittelt.\nVielen Dank für Ihre Eingabe.',
+    'new-entry': 'Neue Eingabe',
+    'err-employee': 'Bitte wählen Sie einen Mitarbeiter',
+    'err-type': 'Bitte wählen Sie Einkauf oder Verkauf',
+    'err-month': 'Bitte wählen Sie einen Monat',
+    'err-species': 'Bitte wählen Sie eine Holzart',
+    'err-location': 'Bitte geben Sie einen Standort an',
+    'sending': 'Wird gesendet...',
+    'months': ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
+    'species': ['Eiche','Buche','Esche','Ahorn','Nadelholz'],
+    'drying-opts': ['Grün / Roh','Luftgetrocknet','Kammergetrocknet (KD)','Technisch getrocknet'],
+    'drying-vals': ['Grün/Roh','Luftgetrocknet','Kammergetrocknet','Technisch getrocknet'],
+    'emp-placeholder': '— Mitarbeiter wählen —',
+    'month-placeholder': '— Monat wählen —',
+    'species-placeholder': '— Holzart wählen —',
+    'drying-placeholder': '— Wählen —',
+    'rv-date': 'Datum', 'rv-employee': 'Mitarbeiter', 'rv-type': 'Typ',
+    'rv-month': 'Liefermonat', 'rv-species': 'Holzart', 'rv-quality': 'Qualität',
+    'rv-grade': 'Sortierung', 'rv-thickness': 'Stärke', 'rv-width': 'Breite',
+    'rv-length': 'Länge', 'rv-volume': 'Menge', 'rv-drying': 'Trocknung',
+    'rv-price': 'Preis/Einheit', 'rv-location': 'Standort', 'rv-contact': 'Kontakt',
+    'rv-remarks': 'Anmerkungen', 'buy-badge': 'Einkauf', 'sell-badge': 'Verkauf',
+  },
+  fr: {
+    'main-title': "Enregistrer une information marché",
+    'main-sub':   "Remplissez le formulaire pour enregistrer une opportunité d'achat ou de vente",
+    'step1': 'Info', 'step2': 'Détails', 'step3': 'Finances', 'step4': 'Réviser',
+    's1-title': 'Informations de base',
+    's2-title': 'Détails du produit',
+    's3-title': 'Prix & Logistique',
+    's4-title': 'Réviser & Envoyer',
+    'lbl-employee': 'Employé',
+    'lbl-type': 'Type',
+    'buyLabel': 'Achat', 'sellLabel': 'Vente',
+    'lbl-month': 'Livraison (mois approximatif)',
+    'lbl-species': 'Essence de bois',
+    'lbl-quality': 'Qualité', 'lbl-grade': 'Classement',
+    'lbl-thickness': 'Épaisseur (mm)', 'lbl-width': 'Largeur (mm)',
+    'lbl-length': 'Longueur (mm)', 'lbl-volume': 'Quantité/Volume',
+    'lbl-drying': 'Séchage',
+    'lbl-price': 'Prix par unité',
+    'lbl-location': 'Pays & Localisation',
+    'location-buy': "(Enlèvement)", 'location-sell': '(Livraison)',
+    'contact-buy': 'Fournisseur', 'contact-sell': 'Client',
+    'lbl-contact': '', 'lbl-remarks': 'Remarques',
+    'opt': 'optionnel',
+    'back': 'Retour', 'next': 'Suivant', 'review-btn': 'Vérifier',
+    'submit': 'Envoyer à SharePoint',
+    'review-note': 'Vérifiez les informations ci-dessus. Cliquez sur "Envoyer" pour enregistrer dans SharePoint.',
+    'success-title': 'Enregistré !',
+    'success-sub':   'Vos données ont été enregistrées et envoyées à SharePoint.\nMerci pour votre saisie.',
+    'new-entry': 'Nouvel enregistrement',
+    'err-employee': 'Veuillez sélectionner un employé',
+    'err-type': "Veuillez sélectionner achat ou vente",
+    'err-month': 'Veuillez sélectionner un mois',
+    'err-species': 'Veuillez sélectionner une essence',
+    'err-location': 'Veuillez indiquer une localisation',
+    'sending': 'Envoi en cours...',
+    'months': ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
+    'species': ['Chêne','Hêtre','Frêne','Érable','Résineux'],
+    'drying-opts': ['Vert / Brut','Séché à l\'air','Séché en chambre (KD)','Séché techniquement'],
+    'drying-vals': ['Vert/Brut','Séché air','Séché chambre','Séché tech.'],
+    'emp-placeholder': '— Choisir un employé —',
+    'month-placeholder': '— Choisir un mois —',
+    'species-placeholder': '— Choisir une essence —',
+    'drying-placeholder': '— Choisir —',
+    'rv-date': 'Date', 'rv-employee': 'Employé', 'rv-type': 'Type',
+    'rv-month': 'Mois livraison', 'rv-species': 'Essence', 'rv-quality': 'Qualité',
+    'rv-grade': 'Classement', 'rv-thickness': 'Épaisseur', 'rv-width': 'Largeur',
+    'rv-length': 'Longueur', 'rv-volume': 'Volume', 'rv-drying': 'Séchage',
+    'rv-price': 'Prix/unité', 'rv-location': 'Localisation', 'rv-contact': 'Contact',
+    'rv-remarks': 'Remarques', 'buy-badge': 'Achat', 'sell-badge': 'Vente',
+  },
+  en: {
+    'main-title': 'Register Market Information',
+    'main-sub':   'Fill in the form to register a purchase or sales opportunity',
+    'step1': 'Info', 'step2': 'Details', 'step3': 'Economics', 'step4': 'Review',
+    's1-title': 'Basic Information',
+    's2-title': 'Product Details',
+    's3-title': 'Price & Logistics',
+    's4-title': 'Review & Submit',
+    'lbl-employee': 'Employee',
+    'lbl-type': 'Type',
+    'buyLabel': 'Purchase', 'sellLabel': 'Sale',
+    'lbl-month': 'Delivery (approx. month)',
+    'lbl-species': 'Wood Species',
+    'lbl-quality': 'Quality', 'lbl-grade': 'Grading',
+    'lbl-thickness': 'Thickness (mm)', 'lbl-width': 'Width (mm)',
+    'lbl-length': 'Length (mm)', 'lbl-volume': 'Quantity/Volume',
+    'lbl-drying': 'Drying',
+    'lbl-price': 'Price per unit',
+    'lbl-location': 'Country & Location',
+    'location-buy': '(Collection)', 'location-sell': '(Delivery)',
+    'contact-buy': 'Supplier', 'contact-sell': 'Customer',
+    'lbl-contact': '', 'lbl-remarks': 'Remarks',
+    'opt': 'optional',
+    'back': 'Back', 'next': 'Next', 'review-btn': 'Review',
+    'submit': 'Send to SharePoint',
+    'review-note': 'Please verify the information above. Click "Submit" to register in SharePoint.',
+    'success-title': 'Submitted!',
+    'success-sub':   'Your data has been saved and sent to the SharePoint Excel sheet.\nThank you for your entry.',
+    'new-entry': 'New Entry',
+    'err-employee': 'Please select an employee',
+    'err-type': 'Please select Purchase or Sale',
+    'err-month': 'Please select a month',
+    'err-species': 'Please select a wood species',
+    'err-location': 'Please enter a location',
+    'sending': 'Sending...',
+    'months': ['January','February','March','April','May','June','July','August','September','October','November','December'],
+    'species': ['Oak','Beech','Ash','Maple','Softwood'],
+    'drying-opts': ['Green / Raw','Air Dried','Kiln Dried (KD)','Technically Dried'],
+    'drying-vals': ['Green/Raw','Air Dried','Kiln Dried','Technically Dried'],
+    'emp-placeholder': '— Select employee —',
+    'month-placeholder': '— Select month —',
+    'species-placeholder': '— Select species —',
+    'drying-placeholder': '— Select —',
+    'rv-date': 'Date', 'rv-employee': 'Employee', 'rv-type': 'Type',
+    'rv-month': 'Delivery Month', 'rv-species': 'Species', 'rv-quality': 'Quality',
+    'rv-grade': 'Grading', 'rv-thickness': 'Thickness', 'rv-width': 'Width',
+    'rv-length': 'Length', 'rv-volume': 'Volume', 'rv-drying': 'Drying',
+    'rv-price': 'Price/unit', 'rv-location': 'Location', 'rv-contact': 'Contact',
+    'rv-remarks': 'Remarks', 'buy-badge': 'Purchase', 'sell-badge': 'Sale',
+  }
+};
+
+// ── STATE ─────────────────────────────────────────────
+let lang = 'da';
+let currentStep = 1;
+let selectedType = '';
+
+// ── DATE ──────────────────────────────────────────────
+const now = new Date();
+const dateStr = now.toLocaleDateString('da-DK', {year:'numeric',month:'long',day:'numeric'});
+const dateISO = now.toISOString().split('T')[0];
+document.getElementById('headerDate').textContent = dateStr;
+
+// ── LANGUAGE ──────────────────────────────────────────
+function t(key) { return i18n[lang][key] || i18n['en'][key] || key; }
+
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('.lang-tab').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === l);
+  });
+  applyTranslations();
+}
+
+function applyTranslations() {
+  const T = i18n[lang];
+  document.getElementById('ttl-main').textContent = T['main-title'];
+  document.getElementById('ttl-sub').textContent  = T['main-sub'];
+  document.getElementById('s1-title').textContent = T['s1-title'];
+  document.getElementById('s2-title').textContent = T['s2-title'];
+  document.getElementById('s3-title').textContent = T['s3-title'];
+  document.getElementById('s4-title').textContent = T['s4-title'];
+  document.getElementById('lbl1').textContent = T['step1'];
+  document.getElementById('lbl2').textContent = T['step2'];
+  document.getElementById('lbl3').textContent = T['step3'];
+  document.getElementById('lbl4').textContent = T['step4'];
+  document.getElementById('lbl-employee').textContent = T['lbl-employee'];
+  document.getElementById('lbl-type').textContent = T['lbl-type'];
+  document.getElementById('buyLabel').textContent  = T['buyLabel'];
+  document.getElementById('sellLabel').textContent = T['sellLabel'];
+  document.getElementById('lbl-month').textContent   = T['lbl-month'];
+  document.getElementById('lbl-species').textContent = T['lbl-species'];
+  document.getElementById('lbl-quality').childNodes[0].textContent = T['lbl-quality'] + ' ';
+  document.getElementById('lbl-grade').childNodes[0].textContent   = T['lbl-grade'] + ' ';
+  document.getElementById('lbl-thickness').childNodes[0].textContent = T['lbl-thickness'] + ' ';
+  document.getElementById('lbl-width').childNodes[0].textContent     = T['lbl-width'] + ' ';
+  document.getElementById('lbl-length').childNodes[0].textContent    = T['lbl-length'] + ' ';
+  document.getElementById('lbl-volume').childNodes[0].textContent    = T['lbl-volume'] + ' ';
+  document.getElementById('lbl-drying').childNodes[0].textContent    = T['lbl-drying'] + ' ';
+  document.getElementById('lbl-price').childNodes[0].textContent     = T['lbl-price'] + ' ';
+  document.getElementById('lbl-location').childNodes[0].textContent  = T['lbl-location'] + ' ';
+  document.getElementById('lbl-remarks').childNodes[0].textContent   = T['lbl-remarks'] + ' ';
+  // Optional badges
+  ['opt1','opt2','opt3','opt4','opt5','opt6','opt7','opt8','opt9','opt10'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = T['opt'];
+  });
+  // Back buttons
+  ['backBtn1','backBtn2','backBtn3'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = T['back'];
+  });
+  document.getElementById('btn1Next').textContent = T['next'] + ' →';
+  document.getElementById('btn2Next').textContent = T['next'] + ' →';
+  document.getElementById('btn3Next').textContent = T['review-btn'] + ' →';
+  document.getElementById('submitLabel').textContent = T['submit'];
+  document.getElementById('reviewNote').textContent  = T['review-note'];
+  document.getElementById('successTitle').textContent  = T['success-title'];
+  document.getElementById('successSub').textContent    = T['success-sub'].replace('\\n', '\n');
+  document.getElementById('newEntryLabel').textContent = T['new-entry'];
+
+  // Update dropdowns
+  rebuildSelect('fMonth', T['month-placeholder'], T['months'], T['months']);
+  rebuildSelect('fSpecies', T['species-placeholder'], T['species'], T['species']);
+  rebuildSelect('fDrying', T['drying-placeholder'], T['drying-opts'], T['drying-vals']);
+
+  // Location / contact type labels
+  updateLocationLabels();
+
+  // Rebuild review if on step 4
+  if (currentStep === 4) buildReview();
+}
+
+function rebuildSelect(id, placeholder, labels, values) {
+  const sel = document.getElementById(id);
+  const current = sel.value;
+  sel.innerHTML = `<option value="">${placeholder}</option>`;
+  labels.forEach((lbl, i) => {
+    const opt = document.createElement('option');
+    opt.value = values[i];
+    opt.textContent = lbl;
+    sel.appendChild(opt);
+  });
+  sel.value = current;
+}
+
+function updateLocationLabels() {
+  const T = i18n[lang];
+  const locTypeLbl = document.getElementById('locationTypeLabel');
+  const contactTypeLbl = document.getElementById('contactTypeLabel');
+  if (locTypeLbl) locTypeLbl.textContent = selectedType === 'sell' ? T['location-sell'] : T['location-buy'];
+  if (contactTypeLbl) contactTypeLbl.textContent = selectedType === 'sell' ? T['contact-sell'] : T['contact-buy'];
+}
+
+// ── TYPE SELECTION ────────────────────────────────────
+function selectType(type) {
+  selectedType = type;
+  document.getElementById('btnBuy').className  = 'type-btn' + (type === 'buy'  ? ' selected-buy'  : '');
+  document.getElementById('btnSell').className = 'type-btn' + (type === 'sell' ? ' selected-sell' : '');
+  updateLocationLabels();
+}
+
+// ── STEP NAVIGATION ───────────────────────────────────
+function goStep(n) {
+  if (n > currentStep && !validateStep(currentStep)) return;
+  currentStep = n;
+  ['step1','step2','step3','step4','stepSuccess'].forEach((id, i) => {
+    document.getElementById(id).classList.toggle('hidden', (i + 1) !== n);
+  });
+  updateProgress(n);
+  if (n === 4) buildReview();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function updateProgress(step) {
+  const pct = ((step - 1) / 3) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  for (let i = 1; i <= 4; i++) {
+    const dot = document.getElementById('dot' + i);
+    const lbl = document.getElementById('lbl' + i);
+    dot.className  = 'step-dot' + (i < step ? ' done' : i === step ? ' active' : '');
+    lbl.className  = 'step-label' + (i < step ? ' done' : i === step ? ' active' : '');
+    dot.textContent = i < step ? '✓' : i;
+  }
+}
+
+// ── VALIDATION ────────────────────────────────────────
+function validateStep(step) {
+  let ok = true;
+  if (step === 1) {
+    ok = showErr('fEmployee', 'err-employee', t('err-employee')) && ok;
+    ok = showErrCond(!selectedType, 'err-type', t('err-type')) && ok;
+    ok = showErr('fMonth', 'err-month', t('err-month')) && ok;
+    ok = showErr('fSpecies', 'err-species', t('err-species')) && ok;
+  }
+  if (step === 3) {
+    ok = showErr('fLocation', 'err-location', t('err-location')) && ok;
+  }
+  return ok;
+}
+
+function showErr(fieldId, errId, msg) {
+  const val = document.getElementById(fieldId).value.trim();
+  const err = document.getElementById(errId);
+  if (!val) { err.textContent = msg; err.style.display = 'block'; return false; }
+  err.style.display = 'none'; return true;
+}
+
+function showErrCond(cond, errId, msg) {
+  const err = document.getElementById(errId);
+  if (cond) { err.textContent = msg; err.style.display = 'block'; return false; }
+  err.style.display = 'none'; return true;
+}
+
+// ── REVIEW BUILD ──────────────────────────────────────
+function buildReview() {
+  const T = i18n[lang];
+  const typeLabel = selectedType === 'buy' ? T['buy-badge'] : T['sell-badge'];
+  const typeClass = selectedType === 'buy' ? 'buy' : 'sell';
+
+  const fields = [
+    [T['rv-date'],     dateISO],
+    [T['rv-employee'], document.getElementById('fEmployee').value],
+    [T['rv-type'],     `<span class="type-badge ${typeClass}">${typeLabel}</span>`],
+    [T['rv-month'],    document.getElementById('fMonth').value],
+    [T['rv-species'],  document.getElementById('fSpecies').value],
+    [T['rv-quality'],  document.getElementById('fQuality').value],
+    [T['rv-grade'],    document.getElementById('fGrade').value],
+    [T['rv-thickness'],document.getElementById('fThickness').value],
+    [T['rv-width'],    document.getElementById('fWidth').value],
+    [T['rv-length'],   document.getElementById('fLength').value],
+    [T['rv-volume'],   document.getElementById('fVolume').value],
+    [T['rv-drying'],   document.getElementById('fDrying').value],
+    [T['rv-price'],    document.getElementById('fPrice').value],
+    [T['rv-location'], document.getElementById('fLocation').value],
+    [T['rv-contact'],  document.getElementById('fContact').value],
+    [T['rv-remarks'],  document.getElementById('fRemarks').value],
+  ];
+
+  const grid = document.getElementById('reviewGrid');
+  grid.innerHTML = fields
+    .filter(([, v]) => v)
+    .map(([l, v]) => `
+      <div class="review-row">
+        <div class="review-label">${l}</div>
+        <div class="review-value">${v}</div>
+      </div>`).join('');
+}
+
+// ── DATA COLLECTION ───────────────────────────────────
+function collectData() {
+  return {
+    "Date":                       dateISO,
+    "Employee":                   document.getElementById('fEmployee').value,
+    "Purchase or sales":          selectedType === 'buy' ? 'Purchase' : 'Sale',
+    "Delivery month":             document.getElementById('fMonth').value,
+    "Specie":                     document.getElementById('fSpecies').value,
+    "Volume":                     document.getElementById('fVolume').value,
+    "Quality":                    document.getElementById('fQuality').value,
+    "Length":                     document.getElementById('fLength').value,
+    "Diameter":                   document.getElementById('fThickness').value,
+    "Measurement type":           document.getElementById('fGrade').value,
+    "Freetrim":                   document.getElementById('fWidth').value,
+    "Bark deduction":             document.getElementById('fDrying').value,
+    "Price indication pr unit":   document.getElementById('fPrice').value,
+    "Location (del. or pickup)":  document.getElementById('fLocation').value,
+    "Supplier/customer name":     document.getElementById('fContact').value,
+    "Remarks":                    document.getElementById('fRemarks').value,
+  };
+}
+
+// ── SUBMIT ────────────────────────────────────────────
+async function submitForm() {
+  const btn = document.getElementById('btnSubmit');
+  const T = i18n[lang];
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spinner"></span>${T['sending']}`;
+
+  const data = collectData();
+  console.log('Submitting data:', data); // Debug
+
+  let success = false;
+
+  if (POWER_AUTOMATE_URL) {
+    // ── Power Automate path ──
+    try {
+      await fetch(POWER_AUTOMATE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        mode: 'no-cors'
+      });
+      // With no-cors we can't read the response, so we assume success
+      success = true;
+    } catch(e) {
+      console.error('Power Automate error:', e);
+      success = false;
+    }
+  } else {
+    // ── Fallback: save locally + show data ──
+    const stored = JSON.parse(localStorage.getItem('timberEntries') || '[]');
+    stored.push(data);
+    localStorage.setItem('timberEntries', JSON.stringify(stored));
+    console.log('All entries:', stored);
+    // Simulate a short delay
+    await new Promise(r => setTimeout(r, 1200));
+    success = true;
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = `🚀 <span>${T['submit']}</span>`;
+
+  if (success) {
+    // Show success screen
+    ['step1','step2','step3','step4'].forEach(id => {
+      document.getElementById(id).classList.add('hidden');
+    });
+    document.getElementById('progressSection').classList.add('hidden');
+    document.getElementById('mainTitle').classList.add('hidden');
+    document.getElementById('stepSuccess').classList.remove('hidden');
+  } else {
+    alert('Der opstod en fejl. Prøv venligst igen.');
+  }
+}
+
+// ── RESET ─────────────────────────────────────────────
+function resetForm() {
+  selectedType = '';
+  document.getElementById('fEmployee').value = '';
+  document.getElementById('btnBuy').className  = 'type-btn';
+  document.getElementById('btnSell').className = 'type-btn';
+  document.getElementById('fMonth').value   = '';
+  document.getElementById('fSpecies').value = '';
+  document.getElementById('fQuality').value   = '';
+  document.getElementById('fGrade').value     = '';
+  document.getElementById('fThickness').value = '';
+  document.getElementById('fWidth').value     = '';
+  document.getElementById('fLength').value    = '';
+  document.getElementById('fVolume').value    = '';
+  document.getElementById('fDrying').value    = '';
+  document.getElementById('fPrice').value     = '';
+  document.getElementById('fLocation').value  = '';
+  document.getElementById('fContact').value   = '';
+  document.getElementById('fRemarks').value   = '';
+
+  document.getElementById('stepSuccess').classList.add('hidden');
+  document.getElementById('progressSection').classList.remove('hidden');
+  document.getElementById('mainTitle').classList.remove('hidden');
+  goStep(1);
+}
+
+// ── INIT ──────────────────────────────────────────────
+applyTranslations();
+updateProgress(1);
+</script>
+</body>
+</html>
