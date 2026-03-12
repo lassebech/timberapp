@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSHwood Market Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #8B6F47;
+    --forest-mid: #A68860;
+    --forest-light: #C4A57B;
+    --bark: #B8860B;
+    --bark-light: #DAA520;
+    --cream: #FFF8DC;
+    --cream-dark: #F5E6D3;
+    --gold: #CD853F;
+    --gold-light: #DEB887;
+    --text-dark: #1a1a1a;
+    --text-mid: #4a4a4a;
+    --text-light: #8a8a8a;
+    --white: #ffffff;
+    --shadow: 0 4px 24px rgba(26,58,42,0.12);
+    --shadow-lg: 0 12px 48px rgba(26,58,42,0.18);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 80% 0%, rgba(74,128,96,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 0% 100%, rgba(107,66,38,0.06) 0%, transparent 50%);
+  }
+
+  header {
+    background: var(--forest);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.25);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-icon {
+    width: 38px;
+    height: 38px;
+    background: var(--gold);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+
+  .logo-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    color: var(--cream);
+    letter-spacing: 0.01em;
+  }
+
+  .logo-sub {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+
+  .lang-tabs {
+    display: flex;
+    gap: 3px;
+    padding: 8px 12px;
+    background: rgba(0,0,0,0.15);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .lang-tab {
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    color: rgba(255,255,255,0.55);
+    background: transparent;
+    letter-spacing: 0.03em;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .lang-tab:hover {
+    color: var(--cream);
+    background: rgba(255,255,255,0.08);
+  }
+
+  .lang-tab.active {
+    background: var(--gold);
+    color: var(--forest);
+    font-weight: 600;
+    border-color: var(--gold-light);
+  }
+
+  .lang-flag { 
+    font-size: 0.9rem;
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
+    line-height: 1;
+  }
+
+  .main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--forest);
+    margin-bottom: 6px;
+  }
+
+  .page-subtitle {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 32px;
+  }
+
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 36px;
+    position: relative;
+  }
+
+  .progress-track {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    height: 2px;
+    background: var(--cream-dark);
+    z-index: 0;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--gold);
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .step-dots {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+
+  .step-dot-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .step-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--cream-dark);
+    background: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-light);
+    transition: var(--transition);
+    cursor: pointer;
+  }
+
+  .step-dot.active {
+    border-color: var(--gold);
+    background: var(--gold);
+    color: var(--white);
+    box-shadow: 0 0 0 4px rgba(200,151,58,0.2);
+  }
+
+  .step-dot.done {
+    border-color: var(--forest-light);
+    background: var(--forest-light);
+    color: var(--white);
+  }
+
+  .step-label {
+    font-size: 0.68rem;
+    color: var(--text-light);
+    text-align: center;
+    max-width: 80px;
+    line-height: 1.2;
+  }
+
+  .step-label.active { color: var(--gold); font-weight: 600; }
+  .step-label.done { color: var(--forest-light); }
+
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+    border: 1px solid rgba(26,58,42,0.06);
+    animation: slideIn 0.35s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    color: var(--forest);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-icon {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--forest), var(--forest-light));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .field-group {
+    margin-bottom: 20px;
+  }
+
+  label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-mid);
+    margin-bottom: 7px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .optional-badge {
+    font-size: 0.68rem;
+    background: var(--cream-dark);
+    color: var(--text-light);
+    padding: 2px 7px;
+    border-radius: 4px;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+    margin-left: 6px;
+  }
+
+  select, input[type="text"], input[type="number"], input[type="date"], textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--cream-dark);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    background: var(--cream);
+    transition: var(--transition);
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+  }
+
+  select:focus, input:focus, textarea:focus {
+    border-color: var(--forest-light);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(74,128,96,0.12);
+  }
+
+  .select-wrap {
+    position: relative;
+  }
+
+  .select-wrap::after {
+    content: '▾';
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    pointer-events: none;
+    font-size: 0.9rem;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 90px;
+    line-height: 1.5;
+  }
+
+  .type-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .type-btn {
+    padding: 16px 12px;
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--cream-dark);
+    background: var(--cream);
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-mid);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .type-btn .type-icon { font-size: 1.8rem; }
+
+  .type-btn.selected-buy {
+    border-color: var(--forest);
+    background: var(--forest);
+    color: var(--white);
+    box-shadow: 0 4px 16px rgba(26,58,42,0.25);
+  }
+
+  .type-btn.selected-sell {
+    border-color: var(--bark);
+    background: var(--bark);
+    color: var(--white);
+    box-shadow: 0 4px 16px rgba(107,66,38,0.25);
+  }
+
+  .type-btn:hover:not(.selected-buy):not(.selected-sell) {
+    border-color: var(--forest-light);
+    background: var(--white);
+  }
+
+  .category-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .category-btn {
+    padding: 20px 16px;
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--cream-dark);
+    background: var(--cream);
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-mid);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .category-btn .cat-icon { font-size: 2rem; }
+
+  .category-btn.selected {
+    border-color: var(--gold);
+    background: var(--gold);
+    color: var(--forest);
+    box-shadow: 0 4px 16px rgba(200,151,58,0.3);
+  }
+
+  .category-btn:hover:not(.selected) {
+    border-color: var(--gold-light);
+    background: var(--white);
+  }
+
+  .fields-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 500px) {
+    .fields-grid, .category-grid { grid-template-columns: 1fr; }
+  }
+
+  .nav-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+  }
+
+  .btn-back {
+    padding: 13px 24px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--cream-dark);
+    background: var(--white);
+    color: var(--text-mid);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .btn-back:hover { border-color: var(--text-mid); }
+
+  .btn-next {
+    flex: 1;
+    padding: 14px 24px;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: linear-gradient(135deg, var(--forest), var(--forest-light));
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    letter-spacing: 0.02em;
+    box-shadow: 0 4px 16px rgba(26,58,42,0.3);
+  }
+
+  .btn-next:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(26,58,42,0.4);
+  }
+
+  .btn-next:active { transform: translateY(0); }
+
+  .btn-submit {
+    flex: 1;
+    padding: 16px 24px;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--forest);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    letter-spacing: 0.02em;
+    box-shadow: 0 4px 16px rgba(200,151,58,0.4);
+  }
+
+  .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(200,151,58,0.5);
+  }
+
+  .btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .review-grid {
+    display: grid;
+    gap: 8px;
+  }
+
+  .review-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: var(--cream);
+  }
+
+  .review-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    min-width: 120px;
+    padding-top: 2px;
+  }
+
+  .review-value {
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    font-weight: 500;
+    flex: 1;
+  }
+
+  .type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .type-badge.buy { background: var(--forest); color: var(--white); }
+  .type-badge.sell { background: var(--bark); color: var(--white); }
+
+  .success-screen {
+    text-align: center;
+    padding: 48px 24px;
+  }
+
+  .success-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--forest), var(--forest-light));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    margin: 0 auto 24px;
+    box-shadow: 0 8px 24px rgba(26,58,42,0.3);
+    animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes popIn {
+    from { transform: scale(0); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+
+  .success-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--forest);
+    margin-bottom: 10px;
+  }
+
+  .success-sub {
+    color: var(--text-light);
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  .btn-new {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: linear-gradient(135deg, var(--forest), var(--forest-light));
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 4px 16px rgba(26,58,42,0.3);
+  }
+
+  .btn-new:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(26,58,42,0.4);
+  }
+
+  .error-msg {
+    color: #c0392b;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    display: none;
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(26,58,42,0.3);
+    border-top-color: var(--forest);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 480px) {
+    .main { padding: 20px 14px 60px; }
+    .card { padding: 20px 16px; }
+    .page-title { font-size: 1.5rem; }
+    .step-label { font-size: 0.6rem; max-width: 60px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="logo">
+      <div class="logo-icon">🌲</div>
+      <div>
+        <div class="logo-text">DSHwood</div>
+        <div class="logo-sub">Market Platform</div>
+      </div>
+    </div>
+    <div style="font-size:0.75rem; color:rgba(255,255,255,0.4);" id="headerDate"></div>
+  </div>
+  <div class="lang-tabs">
+    <button class="lang-tab active" data-lang="en" onclick="changeLanguage('en')">
+      <span class="lang-flag">🇬🇧</span> EN
+    </button>
+    <button class="lang-tab" data-lang="da" onclick="changeLanguage('da')">
+      <span class="lang-flag">🇩🇰</span> DA
+    </button>
+    <button class="lang-tab" data-lang="de" onclick="changeLanguage('de')">
+      <span class="lang-flag">🇩🇪</span> DE
+    </button>
+    <button class="lang-tab" data-lang="fr" onclick="changeLanguage('fr')">
+      <span class="lang-flag">🇫🇷</span> FR
+    </button>
+  </div>
+</header>
+
+<div class="main">
+
+  <div id="mainTitle">
+    <h1 class="page-title">Registrer markedsinformation</h1>
+    <p class="page-subtitle">Udfyld formularen for at registrere en købs- eller salgsmulighed</p>
+  </div>
+
+  <div class="progress-wrap" id="progressSection">
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="step-dots">
+      <div class="step-dot-wrap">
+        <div class="step-dot active" id="dot1">1</div>
+        <div class="step-label active" id="lbl1">Basis</div>
+      </div>
+      <div class="step-dot-wrap">
+        <div class="step-dot" id="dot2">2</div>
+        <div class="step-label" id="lbl2">Produkt</div>
+      </div>
+      <div class="step-dot-wrap">
+        <div class="step-dot" id="dot3">3</div>
+        <div class="step-label" id="lbl3">Levering</div>
+      </div>
+      <div class="step-dot-wrap">
+        <div class="step-dot" id="dot4">4</div>
+        <div class="step-label" id="lbl4">Gennemse</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 1: Basic Info ═══ -->
+  <div id="step1">
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon">👤</div>
+        <span>Basic Information</span>
+      </div>
+
+      <div class="field-group">
+        <label>User</label>
+        <div class="select-wrap">
+          <select id="fUser">
+            <option value="">— Select user —</option>
+            <option value="Tim">Tim</option>
+            <option value="Henrik">Henrik</option>
+            <option value="Matthias V">Matthias V</option>
+            <option value="Mathias J">Mathias J</option>
+            <option value="Ole">Ole</option>
+            <option value="David">David</option>
+            <option value="Pierre">Pierre</option>
+            <option value="Gavin">Gavin</option>
+            <option value="Lisa">Lisa</option>
+            <option value="Sedat">Sedat</option>
+            <option value="Frank">Frank</option>
+            <option value="Richard">Richard</option>
+            <option value="Duncan">Duncan</option>
+            <option value="Tamsin">Tamsin</option>
+            <option value="Børge">Børge</option>
+            <option value="Nikolaj">Nikolaj</option>
+            <option value="Paul L">Paul L</option>
+            <option value="Paul S">Paul S</option>
+            <option value="Camille">Camille</option>
+            <option value="Ludovic">Ludovic</option>
+          </select>
+        </div>
+        <div class="error-msg" id="err-user">Please select a user</div>
+      </div>
+
+      <div class="field-group">
+        <label>Type</label>
+        <div class="type-toggle">
+          <button class="type-btn" id="btnBuy" onclick="selectType('buy')">
+            <span class="type-icon">🛒</span>
+            <span>Purchase</span>
+          </button>
+          <button class="type-btn" id="btnSell" onclick="selectType('sell')">
+            <span class="type-icon">📦</span>
+            <span>Sale</span>
+          </button>
+        </div>
+        <div class="error-msg" id="err-type">Vælg venligst type</div>
+      </div>
+
+      <div class="field-group">
+        <label>Location</label>
+        <input type="text" id="fLocation" placeholder="e.g., Germany, Hamburg">
+        <div class="error-msg" id="err-location">Angiv venligst lokation</div>
+      </div>
+
+      <div class="field-group">
+        <label>Product Category</label>
+        <div class="category-grid">
+          <button class="category-btn" onclick="selectCategory('hardwood')">
+            <span class="cat-icon">🌳</span>
+            <span id="cat-hardwood-text">Hardwood</span>
+          </button>
+          <button class="category-btn" onclick="selectCategory('softwood')">
+            <span class="cat-icon">🌲</span>
+            <span id="cat-softwood-text">Softwood</span>
+          </button>
+          <button class="category-btn" onclick="selectCategory('biomass')">
+            <span class="cat-icon">🔥</span>
+            <span id="cat-biomass-text">Biomass</span>
+          </button>
+          <button class="category-btn" onclick="selectCategory('lumber')">
+            <span class="cat-icon">
+              <svg width="32" height="32" viewBox="0 0 48 48" style="display: block; margin: 0 auto;">
+                <!-- Bottom plank -->
+                <rect x="6" y="32" width="36" height="4" fill="#8B6F47" stroke="#6B5437" stroke-width="0.5"/>
+                <line x1="10" y1="32" x2="10" y2="36" stroke="#5A4427" stroke-width="0.5"/>
+                <line x1="18" y1="32" x2="18" y2="36" stroke="#5A4427" stroke-width="0.5"/>
+                <line x1="26" y1="32" x2="26" y2="36" stroke="#5A4427" stroke-width="0.5"/>
+                <line x1="34" y1="32" x2="34" y2="36" stroke="#5A4427" stroke-width="0.5"/>
+                
+                <!-- Second plank -->
+                <rect x="6" y="26" width="36" height="4" fill="#A68860" stroke="#8B6F47" stroke-width="0.5"/>
+                <line x1="10" y1="26" x2="10" y2="30" stroke="#6B5437" stroke-width="0.5"/>
+                <line x1="18" y1="26" x2="18" y2="30" stroke="#6B5437" stroke-width="0.5"/>
+                <line x1="26" y1="26" x2="26" y2="30" stroke="#6B5437" stroke-width="0.5"/>
+                <line x1="34" y1="26" x2="34" y2="30" stroke="#6B5437" stroke-width="0.5"/>
+                
+                <!-- Third plank -->
+                <rect x="6" y="20" width="36" height="4" fill="#C4A57B" stroke="#A68860" stroke-width="0.5"/>
+                <line x1="10" y1="20" x2="10" y2="24" stroke="#8B6F47" stroke-width="0.5"/>
+                <line x1="18" y1="20" x2="18" y2="24" stroke="#8B6F47" stroke-width="0.5"/>
+                <line x1="26" y1="20" x2="26" y2="24" stroke="#8B6F47" stroke-width="0.5"/>
+                <line x1="34" y1="20" x2="34" y2="24" stroke="#8B6F47" stroke-width="0.5"/>
+                
+                <!-- Top plank -->
+                <rect x="6" y="14" width="36" height="4" fill="#DEB887" stroke="#C4A57B" stroke-width="0.5"/>
+                <line x1="10" y1="14" x2="10" y2="18" stroke="#A68860" stroke-width="0.5"/>
+                <line x1="18" y1="14" x2="18" y2="18" stroke="#A68860" stroke-width="0.5"/>
+                <line x1="26" y1="14" x2="26" y2="18" stroke="#A68860" stroke-width="0.5"/>
+                <line x1="34" y1="14" x2="34" y2="18" stroke="#A68860" stroke-width="0.5"/>
+              </svg>
+            </span>
+            <span id="cat-lumber-text">Lumber</span>
+          </button>
+        </div>
+        <div class="error-msg" id="err-category">Vælg venligst en produktkategori</div>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-next" onclick="goStep(2)">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 2: Product Details (Dynamic) ═══ -->
+  <div id="step2" class="hidden">
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon">📋</div>
+        <span>Product Details</span>
+      </div>
+
+      <div id="productFields"></div>
+
+      <div class="nav-row">
+        <button class="btn-back" onclick="goStep(1)">← Back</button>
+        <button class="btn-next" onclick="goStep(3)">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 3: Delivery/Pickup ═══ -->
+  <div id="step3" class="hidden">
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon">🚚</div>
+        <span id="step3Title">Delivery Details</span>
+      </div>
+
+      <div id="deliveryFields"></div>
+
+      <div class="nav-row">
+        <button class="btn-back" onclick="goStep(2)">← Back</button>
+        <button class="btn-next" onclick="goStep(4)">Review →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 4: Review ═══ -->
+  <div id="step4" class="hidden">
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon">✅</div>
+        <span>Review & Submit</span>
+      </div>
+
+      <div class="review-grid" id="reviewGrid"></div>
+
+      <div class="nav-row">
+        <button class="btn-back" onclick="goStep(3)">← Back</button>
+        <button class="btn-submit" onclick="submitForm()">
+          🚀 <span>Send to SharePoint</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SUCCESS ═══ -->
+  <div id="stepSuccess" class="hidden">
+    <div class="card">
+      <div class="success-screen">
+        <div class="success-icon">✓</div>
+        <h2 class="success-title">Registered!</h2>
+        <p class="success-sub">Your information has been saved and sent to SharePoint.<br>Thank you for your registration.</p>
+        <button class="btn-new" onclick="resetForm()">
+          ➕ New Entry
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+// ══════════════════════════════════════════════════════
+// LANGUAGE SYSTEM
+// ══════════════════════════════════════════════════════
+
+const TRANSLATIONS = {"en": {"user": "User", "user_select": "— Select user —", "type": "Type", "purchase": "Purchase", "sale": "Sale", "location": "Location", "location_ph": "e.g., Germany, Hamburg", "category": "Product Category", "category_select": "Select product category", "next": "Next", "back": "Back", "review": "Review", "submit": "Send to SharePoint", "success_title": "Registered!", "success_msg": "Your information has been saved and sent to SharePoint.<br>Thank you for your registration.", "new_entry": "New Entry", "err_user": "Please select a user", "err_location": "Please enter location", "err_category": "Please select product category", "title_basic": "Basic Information", "title_product": "Product Details", "title_delivery": "Delivery Details", "title_pickup": "Pickup Details", "title_review": "Review & Submit", "cat_hardwood": "Hardwood", "cat_softwood": "Softwood", "cat_biomass": "Biomass", "cat_lumber": "Lumber"}, "da": {"user": "Bruger", "user_select": "— Vælg bruger —", "type": "Type", "purchase": "Køb", "sale": "Salg", "location": "Lokation", "location_ph": "F.eks. Tyskland, Hamburg", "category": "Produktkategori", "category_select": "Vælg produktkategori", "next": "Næste", "back": "Tilbage", "review": "Gennemse", "submit": "Send til SharePoint", "success_title": "Registreret!", "success_msg": "Dine oplysninger er blevet gemt og sendt til SharePoint.<br>Tak for din registrering.", "new_entry": "Ny registrering", "err_user": "Vælg venligst en bruger", "err_location": "Indtast venligst lokation", "err_category": "Vælg venligst produktkategori", "title_basic": "Grundlæggende information", "title_product": "Produktdetaljer", "title_delivery": "Leveringsdetaljer", "title_pickup": "Afhentningsdetaljer", "title_review": "Gennemse & Send", "cat_hardwood": "Løvtræ", "cat_softwood": "Nåletræ", "cat_biomass": "Biomasse", "cat_lumber": "Savet Træ"}, "de": {"user": "Benutzer", "user_select": "— Benutzer wählen —", "type": "Typ", "purchase": "Kauf", "sale": "Verkauf", "location": "Standort", "location_ph": "z.B. Deutschland, Hamburg", "category": "Produktkategorie", "category_select": "Produktkategorie wählen", "next": "Weiter", "back": "Zurück", "review": "Überprüfen", "submit": "An SharePoint senden", "success_title": "Registriert!", "success_msg": "Ihre Informationen wurden gespeichert und an SharePoint gesendet.<br>Vielen Dank für Ihre Registrierung.", "new_entry": "Neuer Eintrag", "err_user": "Bitte wählen Sie einen Benutzer", "err_location": "Bitte geben Sie den Standort ein", "err_category": "Bitte wählen Sie eine Produktkategorie", "title_basic": "Grundinformationen", "title_product": "Produktdetails", "title_delivery": "Lieferdetails", "title_pickup": "Abholdetails", "title_review": "Überprüfen & Senden", "cat_hardwood": "Hartholz", "cat_softwood": "Nadelholz", "cat_biomass": "Biomasse", "cat_lumber": "Schnittholz"}, "fr": {"user": "Utilisateur", "user_select": "— Sélectionner utilisateur —", "type": "Type", "purchase": "Achat", "sale": "Vente", "location": "Emplacement", "location_ph": "ex. Allemagne, Hambourg", "category": "Catégorie de Produit", "category_select": "Sélectionner catégorie", "next": "Suivant", "back": "Retour", "review": "Réviser", "submit": "Envoyer à SharePoint", "success_title": "Enregistré!", "success_msg": "Vos informations ont été sauvegardées et envoyées à SharePoint.<br>Merci pour votre inscription.", "new_entry": "Nouvelle Entrée", "err_user": "Veuillez sélectionner un utilisateur", "err_location": "Veuillez entrer l'emplacement", "err_category": "Veuillez sélectionner une catégorie", "title_basic": "Informations de Base", "title_product": "Détails du Produit", "title_delivery": "Détails de Livraison", "title_pickup": "Détails de Retrait", "title_review": "Réviser & Envoyer", "cat_hardwood": "Bois Dur", "cat_softwood": "Bois Tendre", "cat_biomass": "Biomasse", "cat_lumber": "Bois Scié"}};
+let currentLang = 'en';
+
+function t(key) {
+  return TRANSLATIONS[currentLang][key] || TRANSLATIONS['en'][key] || key;
+}
+
+function changeLanguage(lang) {
+  currentLang = lang;
+  
+  // Update active button
+  document.querySelectorAll('.lang-tab').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === lang);
+  });
+  
+  // Update all UI text
+  updateAllText();
+}
+
+function updateAllText() {
+  // Step 1 fields
+  const userLabel = document.querySelector('label[for="fUser"]');
+  if (userLabel) userLabel.childNodes[0].textContent = t('user');
+  
+  const userSelect = document.querySelector('#fUser option[value=""]');
+  if (userSelect) userSelect.textContent = t('user_select');
+  
+  const typeLabel = document.querySelector('label');
+  if (typeLabel && typeLabel.textContent.includes('Type')) typeLabel.textContent = t('type');
+  
+  const buyBtn = document.querySelector('#btnBuy span:last-child');
+  if (buyBtn) buyBtn.textContent = t('purchase');
+  
+  const sellBtn = document.querySelector('#btnSell span:last-child');
+  if (sellBtn) sellBtn.textContent = t('sale');
+  
+  const locLabel = document.querySelectorAll('label')[2];
+  if (locLabel) locLabel.textContent = t('location');
+  
+  const locInput = document.getElementById('fLocation');
+  if (locInput) locInput.placeholder = t('location_ph');
+  
+  const catLabel = document.querySelectorAll('label')[3];
+  if (catLabel) catLabel.textContent = t('category');
+  
+  // Buttons
+  document.querySelectorAll('.btn-next').forEach(btn => {
+    const text = btn.textContent.trim();
+    if (text.includes('Next') || text.includes('Næste') || text.includes('Weiter') || text.includes('Suivant')) {
+      btn.innerHTML = t('next') + ' →';
+    } else if (text.includes('Review') || text.includes('Gennemse') || text.includes('Überprüfen') || text.includes('Réviser')) {
+      btn.innerHTML = t('review') + ' →';
+    }
+  });
+  
+  document.querySelectorAll('.btn-back').forEach(btn => {
+    btn.innerHTML = '← ' + t('back');
+  });
+  
+  const submitBtn = document.querySelector('.btn-submit span');
+  if (submitBtn) submitBtn.textContent = t('submit');
+  
+  // Success screen
+  const successTitle = document.querySelector('.success-title');
+  if (successTitle) successTitle.textContent = t('success_title');
+  
+  const successMsg = document.querySelector('.success-sub');
+  if (successMsg) successMsg.innerHTML = t('success_msg');
+  
+  const newBtn = document.querySelector('.btn-new');
+  if (newBtn) newBtn.innerHTML = '➕ ' + t('new_entry');
+  
+  // Errors
+  const errUser = document.getElementById('err-user');
+  if (errUser) errUser.textContent = t('err_user');
+  
+  const errLoc = document.getElementById('err-location');
+  if (errLoc) errLoc.textContent = t('err_location');
+  
+  const errCat = document.getElementById('err-category');
+  if (errCat) errCat.textContent = t('err_category');
+  
+  // Category buttons
+  const hardwoodText = document.getElementById('cat-hardwood-text');
+  if (hardwoodText) hardwoodText.textContent = t('cat_hardwood');
+  
+  const softwoodText = document.getElementById('cat-softwood-text');
+  if (softwoodText) softwoodText.textContent = t('cat_softwood');
+  
+  const biomassText = document.getElementById('cat-biomass-text');
+  if (biomassText) biomassText.textContent = t('cat_biomass');
+  
+  const lumberText = document.getElementById('cat-lumber-text');
+  if (lumberText) lumberText.textContent = t('cat_lumber');
+}
+
+// ═══════════════════════════════════════════════════════
+// POWER AUTOMATE CONFIGURATION
+// ═══════════════════════════════════════════════════════
+const POWER_AUTOMATE_URL = 'https://defaultf1c87e6cd35147309a521c45715423.c1.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/ede0bd0536c84bb58a932ab2ed67927f/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=8G97Zm_QWrYkOl-WKg422wQJBz47WHK0EfmdOAaIlrI';
+// ═══════════════════════════════════════════════════════
+
+// ── STATE ─────────────────────────────────────────────
+let lang = 'da';
+let currentStep = 1;
+let selectedType = '';
+let selectedCategory = '';
+
+// ── DATE ──────────────────────────────────────────────
+const now = new Date();
+const dateStr = now.toLocaleDateString('da-DK', {year:'numeric',month:'long',day:'numeric'});
+const dateISO = now.toISOString().split('T')[0];
+document.getElementById('headerDate').textContent = dateStr;
+
+// ── LANGUAGE ──────────────────────────────────────────
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('.lang-tab').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === l);
+  });
+}
+
+// ── TYPE & CATEGORY SELECTION ─────────────────────────
+function selectType(type) {
+  selectedType = type;
+  document.getElementById('btnBuy').className  = 'type-btn' + (type === 'buy'  ? ' selected-buy'  : '');
+  document.getElementById('btnSell').className = 'type-btn' + (type === 'sell' ? ' selected-sell' : '');
+  document.getElementById('err-type').style.display = 'none';
+}
+
+function selectCategory(cat) {
+  selectedCategory = cat;
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.classList.remove('selected');
+  });
+  event.target.closest('.category-btn').classList.add('selected');
+  document.getElementById('err-category').style.display = 'none';
+}
+
+// ── STEP NAVIGATION ───────────────────────────────────
+function goStep(n) {
+  if (n > currentStep && !validateStep(currentStep)) return;
+  
+  // Build dynamic fields for step 2
+  if (n === 2) buildProductFields();
+  
+  // Build dynamic fields for step 3
+  if (n === 3) buildDeliveryFields();
+  
+  // Build review for step 4
+  if (n === 4) buildReview();
+  
+  currentStep = n;
+  ['step1','step2','step3','step4','stepSuccess'].forEach((id, i) => {
+    document.getElementById(id).classList.toggle('hidden', (i + 1) !== n);
+  });
+  updateProgress(n);
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function updateProgress(step) {
+  const pct = ((step - 1) / 3) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  for (let i = 1; i <= 4; i++) {
+    const dot = document.getElementById('dot' + i);
+    const lbl = document.getElementById('lbl' + i);
+    dot.className  = 'step-dot' + (i < step ? ' done' : i === step ? ' active' : '');
+    lbl.className  = 'step-label' + (i < step ? ' done' : i === step ? ' active' : '');
+    dot.textContent = i < step ? '✓' : i;
+  }
+}
+
+// ── VALIDATION ────────────────────────────────────────
+function validateStep(step) {
+  let ok = true;
+  if (step === 1) {
+    ok = showErr('fUser', 'err-user', 'Please select a user') && ok;
+    ok = showErrCond(!selectedType, 'err-type', 'Vælg venligst type') && ok;
+    ok = showErr('fLocation', 'err-location', 'Angiv venligst lokation') && ok;
+    ok = showErrCond(!selectedCategory, 'err-category', 'Please select product category') && ok;
+  }
+  return ok;
+}
+
+function showErr(fieldId, errId, msg) {
+  const val = document.getElementById(fieldId).value.trim();
+  const err = document.getElementById(errId);
+  if (!val) { err.textContent = msg; err.style.display = 'block'; return false; }
+  err.style.display = 'none'; return true;
+}
+
+function showErrCond(cond, errId, msg) {
+  const err = document.getElementById(errId);
+  if (cond) { err.textContent = msg; err.style.display = 'block'; return false; }
+  err.style.display = 'none'; return true;
+}
+
+// ── BUILD PRODUCT FIELDS (DYNAMIC) ────────────────────
+function buildProductFields() {
+  const container = document.getElementById('productFields');
+  let html = '';
+
+  if (selectedCategory === 'hardwood') {
+    html = `
+      <div class="field-group">
+        <label>Variant</label>
+        <div class="select-wrap">
+          <select id="fVariant">
+            <option value="">— Vælg variant —</option>
+            <option value="Bøg">Bøg</option>
+            <option value="Hvideg">Hvideg</option>
+            <option value="Rødeg">Rødeg</option>
+            <option value="Ask">Ask</option>
+            <option value="Ahorn">Ahorn</option>
+            <option value="Andet">Andet</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Kvalitet</label>
+        <input type="text" id="fQuality" placeholder="F.eks. A/B, Prime...">
+      </div>
+      <div class="fields-grid">
+        <div class="field-group">
+          <label>Mængde</label>
+          <input type="text" id="fQuantity" placeholder="F.eks. 100 m³">
+        </div>
+        <div class="field-group">
+          <label>Diameter</label>
+          <input type="text" id="fDiameter" placeholder="F.eks. 30-50 cm">
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Prisindikation</label>
+        <input type="text" id="fPrice" placeholder="F.eks. 250 EUR/m³">
+      </div>
+      <div class="field-group">
+        <label>Måletype</label>
+        <div class="select-wrap">
+          <select id="fMeasurement">
+            <option value="">— Vælg måletype —</option>
+            <option value="Fast m³">Fast m³</option>
+            <option value="Rummeter">Rummeter</option>
+            <option value="Stablet">Stablet</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Certificering</label>
+        <div class="select-wrap">
+          <select id="fCertification">
+            <option value="">— Vælg certificering —</option>
+            <option value="PEFC">PEFC</option>
+            <option value="FSC">FSC</option>
+            <option value="NONE">Ingen</option>
+          </select>
+        </div>
+      </div>
+    `;
+  } else if (selectedCategory === 'softwood') {
+    html = `
+      <div class="field-group">
+        <label>Variant</label>
+        <div class="select-wrap">
+          <select id="fVariant">
+            <option value="">— Vælg variant —</option>
+            <option value="Gran">Gran</option>
+            <option value="Ædelgran">Ædelgran</option>
+            <option value="Douglas">Douglas</option>
+            <option value="Lærk">Lærk</option>
+            <option value="Fyr">Fyr</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Type</label>
+        <div class="select-wrap">
+          <select id="fSoftwoodType">
+            <option value="">— Vælg type —</option>
+            <option value="Korttømmer">Korttømmer</option>
+            <option value="Langtømmer">Langtømmer</option>
+            <option value="Containertræ">Containertræ</option>
+            <option value="Cellulose">Cellulose</option>
+            <option value="Emballage">Emballage</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Kvalitet</label>
+        <input type="text" id="fQuality" placeholder="F.eks. A/B">
+      </div>
+      <div class="fields-grid">
+        <div class="field-group">
+          <label>Diameter</label>
+          <input type="text" id="fDiameter" placeholder="F.eks. 20-40 cm">
+        </div>
+        <div class="field-group">
+          <label>Længde</label>
+          <input type="text" id="fLength" placeholder="F.eks. 3-6 m">
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Mængde</label>
+        <input type="text" id="fQuantity" placeholder="F.eks. 200 m³">
+      </div>
+      <div class="field-group">
+        <label>Prisindikation</label>
+        <input type="text" id="fPrice" placeholder="F.eks. 180 EUR/m³">
+      </div>
+      <div class="field-group">
+        <label>Måletype</label>
+        <div class="select-wrap">
+          <select id="fMeasurement">
+            <option value="">— Vælg måletype —</option>
+            <option value="Tons">Tons</option>
+            <option value="Hubert">Hubert</option>
+            <option value="Kubikmeter under bark">Kubikmeter under bark</option>
+            <option value="Kubikmeter over bark">Kubikmeter over bark</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Certificering</label>
+        <div class="select-wrap">
+          <select id="fCertification">
+            <option value="">— Vælg certificering —</option>
+            <option value="PEFC">PEFC</option>
+            <option value="FSC">FSC</option>
+            <option value="NONE">Ingen</option>
+          </select>
+        </div>
+      </div>
+    `;
+  } else if (selectedCategory === 'biomass') {
+    html = `
+      <div class="field-group">
+        <label>Enhed</label>
+        <div class="select-wrap">
+          <select id="fUnit">
+            <option value="">— Vælg enhed —</option>
+            <option value="GJ">GJ</option>
+            <option value="cbm">cbm</option>
+            <option value="tons">tons</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Biomassetype</label>
+        <input type="text" id="fBiomassType" placeholder="F.eks. Træpiller, flis...">
+      </div>
+      <div class="field-group">
+        <label>Mængde</label>
+        <input type="text" id="fQuantity" placeholder="F.eks. 5000 tons">
+      </div>
+      <div class="field-group">
+        <label>Prisindikation</label>
+        <input type="text" id="fPrice" placeholder="F.eks. 120 EUR/ton">
+      </div>
+      <div class="field-group">
+        <label>Certificering</label>
+        <div class="select-wrap">
+          <select id="fCertification">
+            <option value="">— Vælg certificering —</option>
+            <option value="RBP">RBP</option>
+            <option value="SBP">SBP</option>
+            <option value="Ucertificeret">Ucertificeret</option>
+          </select>
+        </div>
+      </div>
+    `;
+  } else if (selectedCategory === 'lumber') {
+    html = `
+      <div class="field-group">
+        <label>Variant</label>
+        <div class="select-wrap">
+          <select id="fVariant">
+            <option value="">— Vælg variant —</option>
+            <option value="Oak">Oak</option>
+            <option value="Beech">Beech</option>
+            <option value="Olive">Olive</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Enhed</label>
+        <input type="text" id="fUnit" placeholder="F.eks. m³, stk...">
+      </div>
+      <div class="field-group">
+        <label>Mængde</label>
+        <input type="text" id="fQuantity" placeholder="F.eks. 50 m³">
+      </div>
+      <div class="fields-grid">
+        <div class="field-group">
+          <label>Længde</label>
+          <input type="text" id="fLength" placeholder="F.eks. 2000 mm">
+        </div>
+        <div class="field-group">
+          <label>Tykkelse</label>
+          <input type="text" id="fThickness" placeholder="F.eks. 50 mm">
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Bredde</label>
+        <input type="text" id="fWidth" placeholder="F.eks. 150 mm">
+      </div>
+      <div class="field-group">
+        <label>Prisindikation</label>
+        <input type="text" id="fPrice" placeholder="F.eks. 800 EUR/m³">
+      </div>
+      <div class="field-group">
+        <label>Certificering</label>
+        <div class="select-wrap">
+          <select id="fCertification">
+            <option value="">— Vælg certificering —</option>
+            <option value="PEFC">PEFC</option>
+            <option value="FSC">FSC</option>
+            <option value="None">None</option>
+          </select>
+        </div>
+      </div>
+    `;
+  }
+
+  container.innerHTML = html;
+}
+
+// ── BUILD DELIVERY FIELDS (DYNAMIC) ───────────────────
+function buildDeliveryFields() {
+  const container = document.getElementById('deliveryFields');
+  const title = document.getElementById('step3Title');
+  
+  if (selectedType === 'buy') {
+    title.textContent = 'Pickup Details';
+    container.innerHTML = `
+      <div class="field-group">
+        <label>Leverandør <span class="optional-badge">valgfri</span></label>
+        <input type="text" id="fSupplier" placeholder="Firmanavn eller kontaktperson">
+      </div>
+      <div class="field-group">
+        <label>Afhentes senest</label>
+        <input type="date" id="fDeadline">
+      </div>
+      <div class="field-group">
+        <label>Andre bemærkninger <span class="optional-badge">valgfri</span></label>
+        <textarea id="fOtherRemarks" placeholder="Yderligere information..."></textarea>
+      </div>
+    `;
+  } else {
+    title.textContent = 'Delivery Details';
+    container.innerHTML = `
+      <div class="field-group">
+        <label>Kunde <span class="optional-badge">valgfri</span></label>
+        <input type="text" id="fCustomer" placeholder="Firmanavn eller kontaktperson">
+      </div>
+      <div class="field-group">
+        <label>Seneste leveringsdato</label>
+        <input type="date" id="fDeadline">
+      </div>
+      <div class="field-group">
+        <label>Andre bemærkninger <span class="optional-badge">valgfri</span></label>
+        <textarea id="fOtherRemarks" placeholder="Yderligere information..."></textarea>
+      </div>
+    `;
+  }
+}
+
+// ── BUILD REVIEW ──────────────────────────────────────
+function buildReview() {
+  const data = collectData();
+  const grid = document.getElementById('reviewGrid');
+  
+  const typeLabel = selectedType === 'buy' ? 'Køb' : 'Salg';
+  const typeClass = selectedType === 'buy' ? 'buy' : 'sell';
+  
+  let rows = [
+    ['Dato', dateISO],
+    ['User', data.User],
+    ['Type', `<span class="type-badge ${typeClass}">${typeLabel}</span>`],
+    ['Location', data.Location],
+    ['Kategori', selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)]
+  ];
+  
+  // Add category-specific fields
+  Object.entries(data).forEach(([key, value]) => {
+    if (value && !['Date', 'User', 'Type', 'Location', 'Category'].includes(key)) {
+      rows.push([key, value]);
+    }
+  });
+  
+  grid.innerHTML = rows
+    .map(([l, v]) => `
+      <div class="review-row">
+        <div class="review-label">${l}</div>
+        <div class="review-value">${v}</div>
+      </div>`).join('');
+}
+
+// ── DATA COLLECTION ───────────────────────────────────
+function collectData() {
+  const data = {
+    "date": dateISO,
+    "employee": document.getElementById('fUser').value,
+    "type": selectedType === 'buy' ? 'Purchase' : 'Sale',
+    "location": document.getElementById('fLocation').value,
+    "category": selectedCategory
+  };
+  
+  // Category-specific fields
+  const variant = document.getElementById('fVariant');
+  if (variant) data["variant"] = variant.value;
+  
+  const quality = document.getElementById('fQuality');
+  if (quality) data["quality"] = quality.value;
+  
+  const quantity = document.getElementById('fQuantity');
+  if (quantity) data["quantity"] = quantity.value;
+  
+  const diameter = document.getElementById('fDiameter');
+  if (diameter) data["diameter"] = diameter.value;
+  
+  const length = document.getElementById('fLength');
+  if (length) data["length"] = length.value;
+  
+  const thickness = document.getElementById('fThickness');
+  if (thickness) data["thickness"] = thickness.value;
+  
+  const width = document.getElementById('fWidth');
+  if (width) data["width"] = width.value;
+  
+  const price = document.getElementById('fPrice');
+  if (price) data["price"] = price.value;
+  
+  const measurement = document.getElementById('fMeasurement');
+  if (measurement) data["measurement"] = measurement.value;
+  
+  const certification = document.getElementById('fCertification');
+  if (certification) data["certification"] = certification.value;
+  
+  const unit = document.getElementById('fUnit');
+  if (unit) data["unit"] = unit.value;
+  
+  const biomassType = document.getElementById('fBiomassType');
+  if (biomassType) data["biomassType"] = biomassType.value;
+  
+  const softwoodType = document.getElementById('fSoftwoodType');
+  if (softwoodType) data["softwoodType"] = softwoodType.value;
+  
+  const otherRemarks = document.getElementById('fOtherRemarks');
+  if (otherRemarks) data["remarks"] = otherRemarks.value;
+  
+  // Delivery fields
+  const supplier = document.getElementById('fSupplier');
+  if (supplier) data["supplier"] = supplier.value;
+  
+  const customer = document.getElementById('fCustomer');
+  if (customer) data["customer"] = customer.value;
+  
+  const deadline = document.getElementById('fDeadline');
+  if (deadline) data["deadline"] = deadline.value;
+  
+  return data;
+}
+
+// ── SUBMIT ────────────────────────────────────────────
+async function submitForm() {
+  const btn = document.querySelector('.btn-submit');
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spinner"></span>Sender...`;
+
+  const data = collectData();
+  console.log('Submitting data:', data);
+
+  let success = false;
+
+  if (POWER_AUTOMATE_URL) {
+    try {
+      await fetch(POWER_AUTOMATE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        mode: 'no-cors'
+      });
+      success = true;
+    } catch(e) {
+      console.error('Power Automate error:', e);
+      success = false;
+    }
+  } else {
+    const stored = JSON.parse(localStorage.getItem('timberEntries') || '[]');
+    stored.push(data);
+    localStorage.setItem('timberEntries', JSON.stringify(stored));
+    await new Promise(r => setTimeout(r, 1200));
+    success = true;
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = `🚀 <span>Send to SharePoint</span>`;
+
+  if (success) {
+    ['step1','step2','step3','step4'].forEach(id => {
+      document.getElementById(id).classList.add('hidden');
+    });
+    document.getElementById('progressSection').classList.add('hidden');
+    document.getElementById('mainTitle').classList.add('hidden');
+    document.getElementById('stepSuccess').classList.remove('hidden');
+  } else {
+    alert('Der opstod en fejl. Prøv venligst igen.');
+  }
+}
+
+// ── RESET ─────────────────────────────────────────────
+function resetForm() {
+  selectedType = '';
+  selectedCategory = '';
+  document.getElementById('fUser').value = '';
+  document.getElementById('btnBuy').className  = 'type-btn';
+  document.getElementById('btnSell').className = 'type-btn';
+  document.getElementById('fLocation').value = '';
+  document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('selected'));
+
+  document.getElementById('stepSuccess').classList.add('hidden');
+  document.getElementById('progressSection').classList.remove('hidden');
+  document.getElementById('mainTitle').classList.remove('hidden');
+  goStep(1);
+}
+
+// ── INIT ──────────────────────────────────────────────
+updateProgress(1);
+</script>
+</body>
+</html>
