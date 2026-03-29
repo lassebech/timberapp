@@ -666,8 +666,8 @@
 <div class="main">
 
   <div id="mainTitle">
-    <h1 class="page-title">Registrer markedsinformation</h1>
-    <p class="page-subtitle">Udfyld formularen for at registrere en købs- eller salgsmulighed</p>
+    <h1 class="page-title" id="mainPageTitle">Register Market Information</h1>
+    <p class="page-subtitle" id="mainPageSubtitle">Fill out the form to register a purchase or sales opportunity</p>
   </div>
 
   <div class="progress-wrap" id="progressSection">
@@ -887,7 +887,7 @@
 // LANGUAGE SYSTEM
 // ══════════════════════════════════════════════════════
 
-const TRANSLATIONS = {"en": {"user": "User", "user_select": "— Select user —", "type": "Type", "purchase": "Purchase", "sale": "Sale", "location": "Location", "location_ph": "e.g., Germany, Hamburg", "category": "Product Category", "category_select": "Select product category", "next": "Next", "back": "Back", "review": "Review", "submit": "Send to SharePoint", "success_title": "Registered!", "success_msg": "Your information has been saved and sent to SharePoint.<br>Thank you for your registration.", "new_entry": "New Entry", "err_user": "Please select a user", "err_location": "Please enter location", "err_category": "Please select product category", "title_basic": "Basic Information", "title_product": "Product Details", "title_delivery": "Delivery Details", "title_pickup": "Pickup Details", "title_review": "Review & Submit", "cat_hardwood": "Hardwood", "cat_softwood": "Softwood", "cat_biomass": "Biomass", "cat_lumber": "Lumber"}, "da": {"user": "Bruger", "user_select": "— Vælg bruger —", "type": "Type", "purchase": "Køb", "sale": "Salg", "location": "Lokation", "location_ph": "F.eks. Tyskland, Hamburg", "category": "Produktkategori", "category_select": "Vælg produktkategori", "next": "Næste", "back": "Tilbage", "review": "Gennemse", "submit": "Send til SharePoint", "success_title": "Registreret!", "success_msg": "Dine oplysninger er blevet gemt og sendt til SharePoint.<br>Tak for din registrering.", "new_entry": "Ny registrering", "err_user": "Vælg venligst en bruger", "err_location": "Indtast venligst lokation", "err_category": "Vælg venligst produktkategori", "title_basic": "Grundlæggende information", "title_product": "Produktdetaljer", "title_delivery": "Leveringsdetaljer", "title_pickup": "Afhentningsdetaljer", "title_review": "Gennemse & Send", "cat_hardwood": "Løvtræ", "cat_softwood": "Nåletræ", "cat_biomass": "Biomasse", "cat_lumber": "Savet Træ"}, "de": {"user": "Benutzer", "user_select": "— Benutzer wählen —", "type": "Typ", "purchase": "Kauf", "sale": "Verkauf", "location": "Standort", "location_ph": "z.B. Deutschland, Hamburg", "category": "Produktkategorie", "category_select": "Produktkategorie wählen", "next": "Weiter", "back": "Zurück", "review": "Überprüfen", "submit": "An SharePoint senden", "success_title": "Registriert!", "success_msg": "Ihre Informationen wurden gespeichert und an SharePoint gesendet.<br>Vielen Dank für Ihre Registrierung.", "new_entry": "Neuer Eintrag", "err_user": "Bitte wählen Sie einen Benutzer", "err_location": "Bitte geben Sie den Standort ein", "err_category": "Bitte wählen Sie eine Produktkategorie", "title_basic": "Grundinformationen", "title_product": "Produktdetails", "title_delivery": "Lieferdetails", "title_pickup": "Abholdetails", "title_review": "Überprüfen & Senden", "cat_hardwood": "Hartholz", "cat_softwood": "Nadelholz", "cat_biomass": "Biomasse", "cat_lumber": "Schnittholz"}, "fr": {"user": "Utilisateur", "user_select": "— Sélectionner utilisateur —", "type": "Type", "purchase": "Achat", "sale": "Vente", "location": "Emplacement", "location_ph": "ex. Allemagne, Hambourg", "category": "Catégorie de Produit", "category_select": "Sélectionner catégorie", "next": "Suivant", "back": "Retour", "review": "Réviser", "submit": "Envoyer à SharePoint", "success_title": "Enregistré!", "success_msg": "Vos informations ont été sauvegardées et envoyées à SharePoint.<br>Merci pour votre inscription.", "new_entry": "Nouvelle Entrée", "err_user": "Veuillez sélectionner un utilisateur", "err_location": "Veuillez entrer l'emplacement", "err_category": "Veuillez sélectionner une catégorie", "title_basic": "Informations de Base", "title_product": "Détails du Produit", "title_delivery": "Détails de Livraison", "title_pickup": "Détails de Retrait", "title_review": "Réviser & Envoyer", "cat_hardwood": "Bois Dur", "cat_softwood": "Bois Tendre", "cat_biomass": "Biomasse", "cat_lumber": "Bois Scié"}};
+const TRANSLATIONS = {"en": {"user": "User", "user_select": "— Select user —", "type": "Type", "purchase": "Purchase", "sale": "Sale", "location": "Location", "location_ph": "e.g., Germany, Hamburg", "category": "Product Category", "category_select": "Select product category", "next": "Next", "back": "Back", "review": "Review", "submit": "Send to SharePoint", "success_title": "Registered!", "success_msg": "Your information has been saved and sent to SharePoint.<br>Thank you for your registration.", "new_entry": "New Entry", "err_user": "Please select a user", "err_location": "Please enter location", "err_category": "Please select product category", "title_basic": "Basic Information", "title_product": "Product Details", "title_delivery": "Delivery Details", "title_pickup": "Pickup Details", "title_review": "Review & Submit", "cat_hardwood": "Hardwood", "cat_softwood": "Softwood", "cat_biomass": "Biomass", "cat_lumber": "Lumber", "step1_card_title": "Basic Information", "step2_card_title": "Product Details", "step3_card_title_buy": "Pickup Details", "step3_card_title_sale": "Delivery Details", "step4_card_title": "Review & Submit", "variant": "Variant", "select_variant": "— Select variant —", "quality": "Quality", "quality_ph": "e.g., A/B, Prime...", "quantity": "Quantity", "quantity_ph": "e.g., 100 m³", "diameter": "Diameter", "diameter_ph": "e.g., 30-50 cm", "length": "Length", "length_ph": "e.g., 3-6 m", "thickness": "Thickness", "thickness_ph": "e.g., 25 mm", "width": "Width", "width_ph": "e.g., 100 mm", "price": "Price indication", "price_ph": "e.g., 250 EUR/m³", "measurement": "Measurement type", "select_measurement": "— Select measurement —", "certification": "Certification", "select_certification": "— Select certification —", "unit": "Unit", "unit_ph": "e.g., m³, pieces", "select_unit": "— Select unit —", "type_field": "Type", "select_type": "— Select type —", "biomass_type": "Biomass Type", "biomass_type_ph": "e.g., Wood Chips, Pellets", "supplier": "Supplier", "supplier_optional": "optional", "customer": "Customer", "customer_optional": "optional", "deadline": "Latest date", "other_remarks": "Other remarks", "remarks_ph": "Additional information...", "beech": "Beech", "white_oak": "White Oak", "red_oak": "Red Oak", "ash": "Ash", "maple": "Maple", "other": "Other", "spruce": "Spruce", "noble_fir": "Noble Fir", "douglas": "Douglas Fir", "larch": "Larch", "pine": "Pine", "short_log": "Short Log", "long_log": "Long Log", "container_wood": "Container Wood", "pulpwood": "Pulpwood", "packing_wood": "Packing Wood", "oak": "Oak", "olive": "Olive", "main_title": "Register Market Information", "main_subtitle": "Fill out the form to register a purchase or sales opportunity"}, "da": {"user": "Bruger", "user_select": "— Vælg bruger —", "type": "Type", "purchase": "Køb", "sale": "Salg", "location": "Lokation", "location_ph": "F.eks. Tyskland, Hamburg", "category": "Produktkategori", "category_select": "Vælg produktkategori", "next": "Næste", "back": "Tilbage", "review": "Gennemse", "submit": "Send til SharePoint", "success_title": "Registreret!", "success_msg": "Dine oplysninger er blevet gemt og sendt til SharePoint.<br>Tak for din registrering.", "new_entry": "Ny registrering", "err_user": "Vælg venligst en bruger", "err_location": "Indtast venligst lokation", "err_category": "Vælg venligst produktkategori", "title_basic": "Grundlæggende information", "title_product": "Produktdetaljer", "title_delivery": "Leveringsdetaljer", "title_pickup": "Afhentningsdetaljer", "title_review": "Gennemse & Send", "cat_hardwood": "Løvtræ", "cat_softwood": "Nåletræ", "cat_biomass": "Biomasse", "cat_lumber": "Savet Træ", "step1_card_title": "Grundlæggende Information", "step2_card_title": "Produktdetaljer", "step3_card_title_buy": "Afhentningsdetaljer", "step3_card_title_sale": "Leveringsdetaljer", "step4_card_title": "Gennemse & Send", "variant": "Variant", "select_variant": "— Vælg variant —", "quality": "Kvalitet", "quality_ph": "f.eks., A/B, Prime...", "quantity": "Mængde", "quantity_ph": "f.eks., 100 m³", "diameter": "Diameter", "diameter_ph": "f.eks., 30-50 cm", "length": "Længde", "length_ph": "f.eks., 3-6 m", "thickness": "Tykkelse", "thickness_ph": "f.eks., 25 mm", "width": "Bredde", "width_ph": "f.eks., 100 mm", "price": "Prisindikation", "price_ph": "f.eks., 250 EUR/m³", "measurement": "Måletype", "select_measurement": "— Vælg måletype —", "certification": "Certificering", "select_certification": "— Vælg certificering —", "unit": "Enhed", "unit_ph": "f.eks., m³, stk", "select_unit": "— Vælg enhed —", "type_field": "Type", "select_type": "— Vælg type —", "biomass_type": "Biomassetype", "biomass_type_ph": "f.eks., Træflis, Pellets", "supplier": "Leverandør", "supplier_optional": "valgfri", "customer": "Kunde", "customer_optional": "valgfri", "deadline": "Seneste dato", "other_remarks": "Andre bemærkninger", "remarks_ph": "Yderligere information...", "beech": "Bøg", "white_oak": "Hvideg", "red_oak": "Rødeg", "ash": "Ask", "maple": "Ahorn", "other": "Andet", "spruce": "Gran", "noble_fir": "Ædelgran", "douglas": "Douglas", "larch": "Lærk", "pine": "Fyr", "short_log": "Korttømmer", "long_log": "Langtømmer", "container_wood": "Containertræ", "pulpwood": "Cellulose", "packing_wood": "Emballage", "oak": "Eg", "olive": "Oliven", "main_title": "Registrer markedsinformation", "main_subtitle": "Udfyld formularen for at registrere en købs- eller salgsmulighed"}, "de": {"user": "Benutzer", "user_select": "— Benutzer wählen —", "type": "Typ", "purchase": "Kauf", "sale": "Verkauf", "location": "Standort", "location_ph": "z.B. Deutschland, Hamburg", "category": "Produktkategorie", "category_select": "Produktkategorie wählen", "next": "Weiter", "back": "Zurück", "review": "Überprüfen", "submit": "An SharePoint senden", "success_title": "Registriert!", "success_msg": "Ihre Informationen wurden gespeichert und an SharePoint gesendet.<br>Vielen Dank für Ihre Registrierung.", "new_entry": "Neuer Eintrag", "err_user": "Bitte wählen Sie einen Benutzer", "err_location": "Bitte geben Sie den Standort ein", "err_category": "Bitte wählen Sie eine Produktkategorie", "title_basic": "Grundinformationen", "title_product": "Produktdetails", "title_delivery": "Lieferdetails", "title_pickup": "Abholdetails", "title_review": "Überprüfen & Senden", "cat_hardwood": "Hartholz", "cat_softwood": "Nadelholz", "cat_biomass": "Biomasse", "cat_lumber": "Schnittholz", "step1_card_title": "Grundinformationen", "step2_card_title": "Produktdetails", "step3_card_title_buy": "Abholdetails", "step3_card_title_sale": "Lieferdetails", "step4_card_title": "Überprüfen & Senden", "variant": "Variante", "select_variant": "— Variante wählen —", "quality": "Qualität", "quality_ph": "z.B., A/B, Prime...", "quantity": "Menge", "quantity_ph": "z.B., 100 m³", "diameter": "Durchmesser", "diameter_ph": "z.B., 30-50 cm", "length": "Länge", "length_ph": "z.B., 3-6 m", "thickness": "Dicke", "thickness_ph": "z.B., 25 mm", "width": "Breite", "width_ph": "z.B., 100 mm", "price": "Preisangabe", "price_ph": "z.B., 250 EUR/m³", "measurement": "Messart", "select_measurement": "— Messart wählen —", "certification": "Zertifizierung", "select_certification": "— Zertifizierung wählen —", "unit": "Einheit", "unit_ph": "z.B., m³, Stück", "select_unit": "— Einheit wählen —", "type_field": "Typ", "select_type": "— Typ wählen —", "biomass_type": "Biomasseart", "biomass_type_ph": "z.B., Hackschnitzel, Pellets", "supplier": "Lieferant", "supplier_optional": "optional", "customer": "Kunde", "customer_optional": "optional", "deadline": "Spätestes Datum", "other_remarks": "Weitere Bemerkungen", "remarks_ph": "Zusätzliche Informationen...", "beech": "Buche", "white_oak": "Weißeiche", "red_oak": "Roteiche", "ash": "Esche", "maple": "Ahorn", "other": "Andere", "spruce": "Fichte", "noble_fir": "Edeltanne", "douglas": "Douglasie", "larch": "Lärche", "pine": "Kiefer", "short_log": "Kurzholz", "long_log": "Langholz", "container_wood": "Containerholz", "pulpwood": "Zellstoff", "packing_wood": "Verpackungsholz", "oak": "Eiche", "olive": "Olive", "main_title": "Marktinformationen Erfassen", "main_subtitle": "Füllen Sie das Formular aus, um eine Kauf- oder Verkaufsmöglichkeit zu erfassen"}, "fr": {"user": "Utilisateur", "user_select": "— Sélectionner utilisateur —", "type": "Type", "purchase": "Achat", "sale": "Vente", "location": "Emplacement", "location_ph": "ex. Allemagne, Hambourg", "category": "Catégorie de Produit", "category_select": "Sélectionner catégorie", "next": "Suivant", "back": "Retour", "review": "Réviser", "submit": "Envoyer à SharePoint", "success_title": "Enregistré!", "success_msg": "Vos informations ont été sauvegardées et envoyées à SharePoint.<br>Merci pour votre inscription.", "new_entry": "Nouvelle Entrée", "err_user": "Veuillez sélectionner un utilisateur", "err_location": "Veuillez entrer l'emplacement", "err_category": "Veuillez sélectionner une catégorie", "title_basic": "Informations de Base", "title_product": "Détails du Produit", "title_delivery": "Détails de Livraison", "title_pickup": "Détails de Retrait", "title_review": "Réviser & Envoyer", "cat_hardwood": "Bois Dur", "cat_softwood": "Bois Tendre", "cat_biomass": "Biomasse", "cat_lumber": "Bois Scié", "step1_card_title": "Informations de Base", "step2_card_title": "Détails du Produit", "step3_card_title_buy": "Détails de Retrait", "step3_card_title_sale": "Détails de Livraison", "step4_card_title": "Réviser & Envoyer", "variant": "Variante", "select_variant": "— Sélectionner variante —", "quality": "Qualité", "quality_ph": "ex., A/B, Prime...", "quantity": "Quantité", "quantity_ph": "ex., 100 m³", "diameter": "Diamètre", "diameter_ph": "ex., 30-50 cm", "length": "Longueur", "length_ph": "ex., 3-6 m", "thickness": "Épaisseur", "thickness_ph": "ex., 25 mm", "width": "Largeur", "width_ph": "ex., 100 mm", "price": "Indication de Prix", "price_ph": "ex., 250 EUR/m³", "measurement": "Type de Mesure", "select_measurement": "— Sélectionner mesure —", "certification": "Certification", "select_certification": "— Sélectionner certification —", "unit": "Unité", "unit_ph": "ex., m³, pièces", "select_unit": "— Sélectionner unité —", "type_field": "Type", "select_type": "— Sélectionner type —", "biomass_type": "Type de Biomasse", "biomass_type_ph": "ex., Copeaux, Granulés", "supplier": "Fournisseur", "supplier_optional": "optionnel", "customer": "Client", "customer_optional": "optionnel", "deadline": "Date limite", "other_remarks": "Autres Remarques", "remarks_ph": "Informations supplémentaires...", "beech": "Hêtre", "white_oak": "Chêne Blanc", "red_oak": "Chêne Rouge", "ash": "Frêne", "maple": "Érable", "other": "Autre", "spruce": "Épicéa", "noble_fir": "Sapin Noble", "douglas": "Douglas", "larch": "Mélèze", "pine": "Pin", "short_log": "Bois Court", "long_log": "Bois Long", "container_wood": "Bois Conteneur", "pulpwood": "Bois de Pâte", "packing_wood": "Bois d'Emballage", "oak": "Chêne", "olive": "Olivier", "main_title": "Enregistrer Informations de Marché", "main_subtitle": "Remplissez le formulaire pour enregistrer une opportunité d'achat ou de vente"}};
 let currentLang = 'en';
 
 function t(key) {
@@ -981,6 +981,32 @@ function updateAllText() {
   
   const lumberText = document.getElementById('cat-lumber-text');
   if (lumberText) lumberText.textContent = t('cat_lumber');
+  
+  // Update main title and subtitle
+  const mainTitle = document.getElementById('mainPageTitle');
+  if (mainTitle) mainTitle.textContent = t('main_title');
+  
+  const mainSubtitle = document.getElementById('mainPageSubtitle');
+  if (mainSubtitle) mainSubtitle.textContent = t('main_subtitle');
+  
+  // Update card titles
+  const step1Title = document.querySelector('#step1 .card-title span');
+  if (step1Title) step1Title.textContent = t('step1_card_title');
+  
+  const step2Title = document.querySelector('#step2 .card-title span');
+  if (step2Title) step2Title.textContent = t('step2_card_title');
+  
+  const step3Title = document.querySelector('#step3 .card-title span');
+  if (step3Title) {
+    step3Title.textContent = selectedType === 'buy' ? t('step3_card_title_buy') : t('step3_card_title_sale');
+  }
+  
+  const step4Title = document.querySelector('#step4 .card-title span');
+  if (step4Title) step4Title.textContent = t('step4_card_title');
+  
+  // Rebuild dynamic fields to update their translations
+  if (selectedCategory) buildProductFields();
+  if (selectedType) buildDeliveryFields();
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1092,56 +1118,55 @@ function buildProductFields() {
   if (selectedCategory === 'hardwood') {
     html = `
       <div class="field-group">
-        <label>Variant</label>
+        <label>${t('variant')}</label>
         <div class="select-wrap">
           <select id="fVariant">
-            <option value="">— Vælg variant —</option>
-            <option value="Bøg">Bøg</option>
-            <option value="Hvideg">Hvideg</option>
-            <option value="Rødeg">Rødeg</option>
-            <option value="Ask">Ask</option>
-            <option value="Ahorn">Ahorn</option>
-            <option value="Andet">Andet</option>
+            <option value="">${t('select_variant')}</option>
+            <option value="Beech">${t('beech')}</option>
+            <option value="White Oak">${t('white_oak')}</option>
+            <option value="Red Oak">${t('red_oak')}</option>
+            <option value="Ash">${t('ash')}</option>
+            <option value="Maple">${t('maple')}</option>
+            <option value="Other">${t('other')}</option>
           </select>
         </div>
       </div>
       <div class="field-group">
-        <label>Kvalitet</label>
-        <input type="text" id="fQuality" placeholder="F.eks. A/B, Prime...">
+        <label>${t('quality')}</label>
+        <input type="text" id="fQuality" placeholder="${t('quality_ph')}">
       </div>
       <div class="fields-grid">
         <div class="field-group">
-          <label>Mængde</label>
-          <input type="text" id="fQuantity" placeholder="F.eks. 100 m³">
+          <label>${t('quantity')}</label>
+          <input type="text" id="fQuantity" placeholder="${t('quantity_ph')}">
         </div>
         <div class="field-group">
-          <label>Diameter</label>
-          <input type="text" id="fDiameter" placeholder="F.eks. 30-50 cm">
+          <label>${t('diameter')}</label>
+          <input type="text" id="fDiameter" placeholder="${t('diameter_ph')}">
         </div>
       </div>
       <div class="field-group">
-        <label>Prisindikation</label>
-        <input type="text" id="fPrice" placeholder="F.eks. 250 EUR/m³">
+        <label>${t('price')}</label>
+        <input type="text" id="fPrice" placeholder="${t('price_ph')}">
       </div>
       <div class="field-group">
-        <label>Måletype</label>
+        <label>${t('measurement')}</label>
         <div class="select-wrap">
           <select id="fMeasurement">
-            <option value="">— Vælg måletype —</option>
-            <option value="Fast m³">Fast m³</option>
-            <option value="Rummeter">Rummeter</option>
-            <option value="Stablet">Stablet</option>
+            <option value="">${t('select_measurement')}</option>
+            <option value="Solid m³">Solid m³</option>
+            <option value="Stacked">Stacked</option>
           </select>
         </div>
       </div>
       <div class="field-group">
-        <label>Certificering</label>
+        <label>${t('certification')}</label>
         <div class="select-wrap">
           <select id="fCertification">
-            <option value="">— Vælg certificering —</option>
+            <option value="">${t('select_certification')}</option>
             <option value="PEFC">PEFC</option>
             <option value="FSC">FSC</option>
-            <option value="NONE">Ingen</option>
+            <option value="None">None</option>
           </select>
         </div>
       </div>
@@ -1149,73 +1174,73 @@ function buildProductFields() {
   } else if (selectedCategory === 'softwood') {
     html = `
       <div class="field-group">
-        <label>Variant</label>
+        <label>${t('variant')}</label>
         <div class="select-wrap">
           <select id="fVariant">
-            <option value="">— Vælg variant —</option>
-            <option value="Gran">Gran</option>
-            <option value="Ædelgran">Ædelgran</option>
-            <option value="Douglas">Douglas</option>
-            <option value="Lærk">Lærk</option>
-            <option value="Fyr">Fyr</option>
+            <option value="">${t('select_variant')}</option>
+            <option value="Spruce">${t('spruce')}</option>
+            <option value="Noble Fir">${t('noble_fir')}</option>
+            <option value="Douglas Fir">${t('douglas')}</option>
+            <option value="Larch">${t('larch')}</option>
+            <option value="Pine">${t('pine')}</option>
           </select>
         </div>
       </div>
       <div class="field-group">
-        <label>Type</label>
+        <label>${t('type_field')}</label>
         <div class="select-wrap">
           <select id="fSoftwoodType">
-            <option value="">— Vælg type —</option>
-            <option value="Korttømmer">Korttømmer</option>
-            <option value="Langtømmer">Langtømmer</option>
-            <option value="Containertræ">Containertræ</option>
-            <option value="Cellulose">Cellulose</option>
-            <option value="Emballage">Emballage</option>
+            <option value="">${t('select_type')}</option>
+            <option value="Short Log">${t('short_log')}</option>
+            <option value="Long Log">${t('long_log')}</option>
+            <option value="Container Wood">${t('container_wood')}</option>
+            <option value="Pulpwood">${t('pulpwood')}</option>
+            <option value="Packing Wood">${t('packing_wood')}</option>
           </select>
         </div>
       </div>
       <div class="field-group">
-        <label>Kvalitet</label>
-        <input type="text" id="fQuality" placeholder="F.eks. A/B">
+        <label>${t('quality')}</label>
+        <input type="text" id="fQuality" placeholder="${t('quality_ph')}">
       </div>
       <div class="fields-grid">
         <div class="field-group">
-          <label>Diameter</label>
-          <input type="text" id="fDiameter" placeholder="F.eks. 20-40 cm">
+          <label>${t('diameter')}</label>
+          <input type="text" id="fDiameter" placeholder="${t('diameter_ph')}">
         </div>
         <div class="field-group">
-          <label>Længde</label>
-          <input type="text" id="fLength" placeholder="F.eks. 3-6 m">
+          <label>${t('length')}</label>
+          <input type="text" id="fLength" placeholder="${t('length_ph')}">
         </div>
       </div>
       <div class="field-group">
-        <label>Mængde</label>
-        <input type="text" id="fQuantity" placeholder="F.eks. 200 m³">
+        <label>${t('quantity')}</label>
+        <input type="text" id="fQuantity" placeholder="${t('quantity_ph')}">
       </div>
       <div class="field-group">
-        <label>Prisindikation</label>
-        <input type="text" id="fPrice" placeholder="F.eks. 180 EUR/m³">
+        <label>${t('price')}</label>
+        <input type="text" id="fPrice" placeholder="${t('price_ph')}">
       </div>
       <div class="field-group">
-        <label>Måletype</label>
+        <label>${t('measurement')}</label>
         <div class="select-wrap">
           <select id="fMeasurement">
-            <option value="">— Vælg måletype —</option>
+            <option value="">${t('select_measurement')}</option>
             <option value="Tons">Tons</option>
             <option value="Hubert">Hubert</option>
-            <option value="Kubikmeter under bark">Kubikmeter under bark</option>
-            <option value="Kubikmeter over bark">Kubikmeter over bark</option>
+            <option value="Cubic meter under bark">m³ under bark</option>
+            <option value="Cubic meter over bark">m³ over bark</option>
           </select>
         </div>
       </div>
       <div class="field-group">
-        <label>Certificering</label>
+        <label>${t('certification')}</label>
         <div class="select-wrap">
           <select id="fCertification">
-            <option value="">— Vælg certificering —</option>
+            <option value="">${t('select_certification')}</option>
             <option value="PEFC">PEFC</option>
             <option value="FSC">FSC</option>
-            <option value="NONE">Ingen</option>
+            <option value="None">None</option>
           </select>
         </div>
       </div>
@@ -1223,10 +1248,10 @@ function buildProductFields() {
   } else if (selectedCategory === 'biomass') {
     html = `
       <div class="field-group">
-        <label>Enhed</label>
+        <label>${t('unit')}</label>
         <div class="select-wrap">
           <select id="fUnit">
-            <option value="">— Vælg enhed —</option>
+            <option value="">${t('select_unit')}</option>
             <option value="GJ">GJ</option>
             <option value="cbm">cbm</option>
             <option value="tons">tons</option>
@@ -1234,25 +1259,25 @@ function buildProductFields() {
         </div>
       </div>
       <div class="field-group">
-        <label>Biomassetype</label>
-        <input type="text" id="fBiomassType" placeholder="F.eks. Træpiller, flis...">
+        <label>${t('biomass_type')}</label>
+        <input type="text" id="fBiomassType" placeholder="${t('biomass_type_ph')}">
       </div>
       <div class="field-group">
-        <label>Mængde</label>
-        <input type="text" id="fQuantity" placeholder="F.eks. 5000 tons">
+        <label>${t('quantity')}</label>
+        <input type="text" id="fQuantity" placeholder="${t('quantity_ph')}">
       </div>
       <div class="field-group">
-        <label>Prisindikation</label>
-        <input type="text" id="fPrice" placeholder="F.eks. 120 EUR/ton">
+        <label>${t('price')}</label>
+        <input type="text" id="fPrice" placeholder="${t('price_ph')}">
       </div>
       <div class="field-group">
-        <label>Certificering</label>
+        <label>${t('certification')}</label>
         <div class="select-wrap">
           <select id="fCertification">
-            <option value="">— Vælg certificering —</option>
+            <option value="">${t('select_certification')}</option>
             <option value="RBP">RBP</option>
             <option value="SBP">SBP</option>
-            <option value="Ucertificeret">Ucertificeret</option>
+            <option value="Uncertified">Uncertified</option>
           </select>
         </div>
       </div>
@@ -1260,48 +1285,48 @@ function buildProductFields() {
   } else if (selectedCategory === 'lumber') {
     html = `
       <div class="field-group">
-        <label>Variant</label>
+        <label>${t('variant')}</label>
         <div class="select-wrap">
           <select id="fVariant">
-            <option value="">— Vælg variant —</option>
-            <option value="Oak">Oak</option>
-            <option value="Beech">Beech</option>
-            <option value="Olive">Olive</option>
-            <option value="Other">Other</option>
+            <option value="">${t('select_variant')}</option>
+            <option value="Oak">${t('oak')}</option>
+            <option value="Beech">${t('beech')}</option>
+            <option value="Olive">${t('olive')}</option>
+            <option value="Other">${t('other')}</option>
           </select>
         </div>
       </div>
       <div class="field-group">
-        <label>Enhed</label>
-        <input type="text" id="fUnit" placeholder="F.eks. m³, stk...">
+        <label>${t('unit')}</label>
+        <input type="text" id="fUnit" placeholder="${t('unit_ph')}">
       </div>
       <div class="field-group">
-        <label>Mængde</label>
-        <input type="text" id="fQuantity" placeholder="F.eks. 50 m³">
+        <label>${t('quantity')}</label>
+        <input type="text" id="fQuantity" placeholder="${t('quantity_ph')}">
       </div>
       <div class="fields-grid">
         <div class="field-group">
-          <label>Længde</label>
-          <input type="text" id="fLength" placeholder="F.eks. 2000 mm">
+          <label>${t('length')}</label>
+          <input type="text" id="fLength" placeholder="${t('length_ph')}">
         </div>
         <div class="field-group">
-          <label>Tykkelse</label>
-          <input type="text" id="fThickness" placeholder="F.eks. 50 mm">
+          <label>${t('thickness')}</label>
+          <input type="text" id="fThickness" placeholder="${t('thickness_ph')}">
+        </div>
+        <div class="field-group">
+          <label>${t('width')}</label>
+          <input type="text" id="fWidth" placeholder="${t('width_ph')}">
         </div>
       </div>
       <div class="field-group">
-        <label>Bredde</label>
-        <input type="text" id="fWidth" placeholder="F.eks. 150 mm">
+        <label>${t('price')}</label>
+        <input type="text" id="fPrice" placeholder="${t('price_ph')}">
       </div>
       <div class="field-group">
-        <label>Prisindikation</label>
-        <input type="text" id="fPrice" placeholder="F.eks. 800 EUR/m³">
-      </div>
-      <div class="field-group">
-        <label>Certificering</label>
+        <label>${t('certification')}</label>
         <div class="select-wrap">
           <select id="fCertification">
-            <option value="">— Vælg certificering —</option>
+            <option value="">${t('select_certification')}</option>
             <option value="PEFC">PEFC</option>
             <option value="FSC">FSC</option>
             <option value="None">None</option>
@@ -1317,38 +1342,35 @@ function buildProductFields() {
 // ── BUILD DELIVERY FIELDS (DYNAMIC) ───────────────────
 function buildDeliveryFields() {
   const container = document.getElementById('deliveryFields');
-  const title = document.getElementById('step3Title');
   
   if (selectedType === 'buy') {
-    title.textContent = 'Pickup Details';
     container.innerHTML = `
       <div class="field-group">
-        <label>Leverandør <span class="optional-badge">valgfri</span></label>
-        <input type="text" id="fSupplier" placeholder="Firmanavn eller kontaktperson">
+        <label>${t('supplier')} <span class="optional-badge">${t('supplier_optional')}</span></label>
+        <input type="text" id="fSupplier" placeholder="">
       </div>
       <div class="field-group">
-        <label>Afhentes senest</label>
+        <label>${t('deadline')}</label>
         <input type="date" id="fDeadline">
       </div>
       <div class="field-group">
-        <label>Andre bemærkninger <span class="optional-badge">valgfri</span></label>
-        <textarea id="fOtherRemarks" placeholder="Yderligere information..."></textarea>
+        <label>${t('other_remarks')} <span class="optional-badge">${t('supplier_optional')}</span></label>
+        <textarea id="fOtherRemarks" placeholder="${t('remarks_ph')}"></textarea>
       </div>
     `;
   } else {
-    title.textContent = 'Delivery Details';
     container.innerHTML = `
       <div class="field-group">
-        <label>Kunde <span class="optional-badge">valgfri</span></label>
-        <input type="text" id="fCustomer" placeholder="Firmanavn eller kontaktperson">
+        <label>${t('customer')} <span class="optional-badge">${t('customer_optional')}</span></label>
+        <input type="text" id="fCustomer" placeholder="">
       </div>
       <div class="field-group">
-        <label>Seneste leveringsdato</label>
+        <label>${t('deadline')}</label>
         <input type="date" id="fDeadline">
       </div>
       <div class="field-group">
-        <label>Andre bemærkninger <span class="optional-badge">valgfri</span></label>
-        <textarea id="fOtherRemarks" placeholder="Yderligere information..."></textarea>
+        <label>${t('other_remarks')} <span class="optional-badge">${t('customer_optional')}</span></label>
+        <textarea id="fOtherRemarks" placeholder="${t('remarks_ph')}"></textarea>
       </div>
     `;
   }
