@@ -1,0 +1,728 @@
+<title>Egestammens Værdikæde</title>
+<style>
+  :root {
+    --bg: #f5f6f2;
+    --surface: #ffffff;
+    --surface-2: #eceee7;
+    --ink: #1c2620;
+    --ink-soft: #56645b;
+    --ink-faint: #8b988e;
+    --border: #d8dcd2;
+    --accent: #a9782e;
+    --accent-ink: #6e4e1c;
+    --accent-soft: #f2e7d3;
+    --accent2: #2f5d50;
+    --accent2-soft: #e3ece7;
+    --warn: #a4442b;
+    --warn-soft: #f5e3dd;
+    --shadow: 0 1px 2px rgba(28,38,32,0.06), 0 6px 20px -8px rgba(28,38,32,0.14);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #131f19;
+      --surface: #1a2921;
+      --surface-2: #223226;
+      --ink: #edf0e9;
+      --ink-soft: #a9b6ac;
+      --ink-faint: #7c8a7d;
+      --border: #2c4034;
+      --accent: #d3a65c;
+      --accent-ink: #f3ddb0;
+      --accent-soft: #362a17;
+      --accent2: #74c1a2;
+      --accent2-soft: #1e332a;
+      --warn: #e0a08c;
+      --warn-soft: #3a231c;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 10px 28px -10px rgba(0,0,0,0.55);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #131f19;
+    --surface: #1a2921;
+    --surface-2: #223226;
+    --ink: #edf0e9;
+    --ink-soft: #a9b6ac;
+    --ink-faint: #7c8a7d;
+    --border: #2c4034;
+    --accent: #d3a65c;
+    --accent-ink: #f3ddb0;
+    --accent-soft: #362a17;
+    --accent2: #74c1a2;
+    --accent2-soft: #1e332a;
+    --warn: #e0a08c;
+    --warn-soft: #3a231c;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 10px 28px -10px rgba(0,0,0,0.55);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { background: var(--bg); }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 48px 32px 90px; }
+  h1, h2, h3 {
+    font-family: "Archivo", "Arial Narrow", sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    margin: 0;
+    color: var(--ink);
+  }
+  .eyebrow {
+    font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+    font-size: 12.5px; font-weight: 500; letter-spacing: 0.09em;
+    text-transform: uppercase; color: var(--accent-ink); margin: 0 0 10px;
+  }
+  .mono { font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace; font-variant-numeric: tabular-nums; }
+
+  header { max-width: 780px; }
+  header h1 { font-size: clamp(28px, 4vw, 38px); }
+  header p.lede { margin: 16px 0 0; color: var(--ink-soft); font-size: 17px; max-width: 66ch; }
+
+  section { margin-top: 52px; }
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
+  .section-head h2 { font-size: 20px; }
+  .section-head .hint { color: var(--ink-faint); font-size: 13.5px; max-width: 42ch; }
+
+  .diffgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .diffcard { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+  .diffcard h3 { font-size: 15px; margin-bottom: 8px; }
+  .diffcard p { margin: 0; font-size: 14px; color: var(--ink-soft); line-height: 1.55; }
+
+  .logpanel {
+    background: #efe7d8;
+    border: 1px solid #d9cbaa;
+    border-radius: 14px;
+    padding: 20px 20px 14px;
+    box-shadow: var(--shadow);
+  }
+  .logpanel svg { width: 100%; height: auto; display: block; }
+  .loglegend { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 14px; padding-top: 14px; border-top: 1px solid #d9cbaa; }
+  .loglegend .item { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: #4a3c26; }
+  .loglegend .sw { width: 11px; height: 11px; border-radius: 3px; flex: none; }
+  .badge-warn {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: "IBM Plex Mono", monospace; font-size: 10.5px; letter-spacing: 0.03em; text-transform: uppercase;
+    background: var(--warn-soft); color: var(--warn); border-radius: 4px; padding: 3px 7px; margin-left: 8px;
+  }
+
+  .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; }
+  .panel h3 { font-size: 14.5px; letter-spacing: 0.01em; margin-bottom: 4px; }
+  .panel .sub { font-size: 12.5px; color: var(--ink-faint); margin-bottom: 16px; }
+  .field { margin-bottom: 16px; }
+  .field:last-child { margin-bottom: 0; }
+  .field-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+  .field-row label { font-size: 13.5px; color: var(--ink-soft); }
+  .field-row .val { font-family: "IBM Plex Mono", monospace; font-size: 13px; font-weight: 600; color: var(--ink); white-space: nowrap; }
+  input[type="range"] {
+    width: 100%; height: 4px; -webkit-appearance: none; appearance: none;
+    background: var(--surface-2); border-radius: 3px; outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--accent);
+    cursor: pointer;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 14px; height: 14px; border-radius: 50%; background: var(--accent); border: 2px solid var(--surface);
+    box-shadow: 0 0 0 1px var(--accent); cursor: pointer;
+  }
+  input[type="number"] {
+    width: 100%; font-family: "IBM Plex Mono", monospace; font-size: 13px;
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px;
+    padding: 7px 8px; color: var(--ink);
+  }
+  .twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .threecol { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .twocol .field, .threecol .field { margin-bottom: 0; }
+  .tinylabel { font-size: 11px; color: var(--ink-faint); margin-bottom: 4px; display: block; }
+  .rule { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+
+  .classtable-wrap { overflow-x: auto; }
+  table.classtable { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  table.classtable th {
+    text-align: left; font-family: "IBM Plex Mono", monospace; font-size: 10.5px; letter-spacing: 0.05em;
+    text-transform: uppercase; color: var(--ink-faint); font-weight: 500; padding: 0 8px 8px; border-bottom: 1px solid var(--border);
+  }
+  table.classtable td { padding: 7px 8px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  table.classtable tr:last-child td { border-bottom: none; }
+  table.classtable .sw { width: 10px; height: 10px; border-radius: 3px; display: inline-block; margin-right: 7px; }
+  table.classtable input[type="number"] { width: 74px; padding: 5px 6px; }
+  .sumline { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-faint); margin-top: 8px; font-family: "IBM Plex Mono", monospace; }
+  .sumline.off { color: var(--warn); }
+
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 10px; }
+  .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+  .kpi .label { font-size: 11.5px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.05em; font-family: "IBM Plex Mono", monospace; margin-bottom: 8px; }
+  .kpi .num { font-family: "Archivo", sans-serif; font-weight: 800; font-size: 24px; }
+  .kpi .num small { font-family: "IBM Plex Mono", monospace; font-weight: 500; font-size: 13px; color: var(--ink-faint); }
+  .kpi.accent { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 35%, var(--border)); }
+  .kpi.accent2 { background: var(--accent2-soft); border-color: color-mix(in srgb, var(--accent2) 35%, var(--border)); }
+  .kpi-note { font-size: 12px; color: var(--ink-faint); margin: 0 0 22px; }
+
+  .resultstable-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 4px 20px 14px; }
+  table.results { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 800px; }
+  table.results th { text-align: left; font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-faint); font-weight: 500; padding: 14px 10px 8px; border-bottom: 1px solid var(--border); }
+  table.results td { padding: 9px 10px; border-bottom: 1px solid var(--border); }
+  table.results tr:last-child td { border-bottom: none; }
+  table.results td.num, table.results th.num { text-align: right; font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; }
+  table.results tr.subtotal td { font-weight: 700; background: var(--surface-2); }
+  table.results tr.net td { font-weight: 800; color: var(--accent-ink); background: var(--accent-soft); }
+
+  .flow-scroll { overflow-x: auto; padding-bottom: 4px; }
+  .flow { display: flex; align-items: stretch; gap: 0; min-width: 1080px; }
+  .fnode { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 6px; }
+  .fnode .dot { width: 34px; height: 34px; border-radius: 50%; background: var(--surface); border: 2px solid var(--accent2); display: flex; align-items: center; justify-content: center; font-family: "IBM Plex Mono", monospace; font-weight: 600; font-size: 12px; color: var(--accent2); margin-bottom: 10px; }
+  .fnode .ftitle { font-family: "Archivo", sans-serif; font-weight: 700; font-size: 12.5px; line-height: 1.25; min-height: 2.4em; }
+  .fnode .fsub { font-size: 11px; color: var(--ink-faint); margin-top: 4px; }
+  .farrow { flex: none; width: 26px; align-self: center; height: 2px; background: var(--border); position: relative; margin-top: -34px; }
+  .farrow::after { content: ""; position: absolute; right: -1px; top: -3px; border: 4px solid transparent; border-left-color: var(--border); }
+
+  footer { margin-top: 46px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12.5px; color: var(--ink-faint); line-height: 1.6; }
+  .reset-btn {
+    font-family: "IBM Plex Mono", monospace; font-size: 12px; background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--ink-soft); padding: 6px 12px; border-radius: 6px; cursor: pointer;
+  }
+  .reset-btn:hover { color: var(--ink); border-color: var(--accent); }
+
+  @media (max-width: 880px) {
+    .diffgrid, .panels { grid-template-columns: 1fr; }
+    .kpis { grid-template-columns: 1fr 1fr; }
+    .threecol { grid-template-columns: 1fr; }
+  }
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Source+Sans+3:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Uddybende case · Frankrig &amp; Tyskland-lageret</p>
+    <h1>Egestammens værdikæde</h1>
+    <p class="lede">Hver egestamme er sit eget lille produkt: en uhomogen råvare, der vurderes og opmærkes stamme for stamme, før den kan sælges eller opsaves. Modellen bygger nu på jeres egne kostpriser — indkøb, sortering, opsavning, intern transport — og de faktiske kvaliteter I sorterer det savede træ i.</p>
+  </header>
+
+  <section>
+    <div class="panel" style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:20px; justify-content:space-between;">
+      <div class="field" style="max-width:300px; margin-bottom:0;">
+        <span class="tinylabel">Total mængde rundtømmer til beregning (m³)</span>
+        <input type="number" id="totalM3" value="100" min="1" step="1">
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button type="button" class="reset-btn preset-btn" data-v="100">100 m³</button>
+        <button type="button" class="reset-btn preset-btn" data-v="500">500 m³</button>
+        <button type="button" class="reset-btn preset-btn" data-v="1000">1.000 m³</button>
+        <button type="button" class="reset-btn preset-btn" data-v="5000">5.000 m³</button>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="diffgrid">
+      <div class="diffcard">
+        <h3>Hvorfor det ikke bare er endnu et trin</h3>
+        <p>Værditrappen antager ensartede enheder, der flytter sig opad. Her er hver stamme forskellig — beslutningen om, hvad den skal blive til, tages individuelt og markeres fysisk på stammen, før saven går i gang.</p>
+      </div>
+      <div class="diffcard">
+        <h3>Én kostpris for alt savet træ</h3>
+        <p>Alt det opsavede træ bærer samme kostpris pr. m³ — uanset om det ender som 1 stjerne eller bordplade. Kun salgsprisen adskiller kvaliteterne, og kun ovntørring lægger en ekstra omkostning oven i for den delmængde.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Stammen — vurdering og opmærkning</h2>
+      <span class="hint">Segmenternes bredde følger forudsætningerne nedenfor og opdateres live.</span>
+    </div>
+    <div class="logpanel">
+      <svg id="logSvg" viewBox="0 0 1000 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustration af en egestamme opdelt i segmenter efter anvendelse">
+        <defs>
+          <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ffffff" stop-opacity="0.30"/>
+            <stop offset="0.45" stop-color="#ffffff" stop-opacity="0"/>
+            <stop offset="1" stop-color="#000000" stop-opacity="0.16"/>
+          </linearGradient>
+          <clipPath id="trunkClip"><rect x="90" y="66" width="820" height="128" rx="10"/></clipPath>
+        </defs>
+
+        <ellipse cx="76" cy="130" rx="20" ry="66" fill="#7a4d2c"/>
+        <ellipse cx="78" cy="130" rx="15" ry="58" fill="#e7d3a8"/>
+        <ellipse cx="80" cy="130" rx="8" ry="46" fill="#93602f"/>
+        <circle cx="80" cy="130" r="3" fill="#5c3a1e"/>
+
+        <g id="segGroup" clip-path="url(#trunkClip)"></g>
+        <rect x="90" y="66" width="820" height="128" rx="10" fill="url(#sheen)" clip-path="url(#trunkClip)"/>
+        <rect x="90" y="66" width="820" height="128" rx="10" fill="none" stroke="#4a2f1d" stroke-opacity="0.35" stroke-width="2"/>
+
+        <ellipse cx="924" cy="130" rx="20" ry="66" fill="#7a4d2c"/>
+        <ellipse cx="922" cy="130" rx="15" ry="58" fill="#e7d3a8"/>
+        <ellipse cx="920" cy="130" rx="8" ry="46" fill="#93602f"/>
+        <circle cx="920" cy="130" r="3" fill="#5c3a1e"/>
+
+        <g id="labelGroup"></g>
+      </svg>
+      <div class="loglegend" id="logLegend"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Kostpriser &amp; procesomkostninger</h2>
+      <span class="hint">Jeres egne tal — alt i euro pr. m³.</span>
+    </div>
+    <div class="panel">
+      <div class="threecol">
+        <div class="field"><span class="tinylabel">Indkøbt kostpris rundtømmer, inkl. transport til lager (€/m³)</span><input type="number" id="kostprisRund" value="160" step="5"></div>
+        <div class="field"><span class="tinylabel">Sortering før opsavning (€/m³)</span><input type="number" id="sorteringCost" value="10" step="1"></div>
+        <div class="field"><span class="tinylabel">Kostpris rundtømmer + sortering (beregnet)</span><input type="text" id="kostprisBaseOut" disabled></div>
+      </div>
+      <hr class="rule">
+      <div class="threecol">
+        <div class="field"><span class="tinylabel">Opsavning (€/m³ savet)</span><input type="number" id="opsavningCost" value="45" step="5"></div>
+        <div class="field"><span class="tinylabel">Intern transport mellem led (€/m³ savet)</span><input type="number" id="transportCost" value="15" step="5"></div>
+        <div class="field"><span class="tinylabel">Sortering efter opsavning (€/m³ savet)</span><input type="number" id="sorteringEfterCost" value="12" step="1"></div>
+      </div>
+      <div class="field" style="margin-top:16px;">
+        <div class="field-row"><label>Svind ved opsavning til planker</label><span class="val" id="svindPctVal">45 %</span></div>
+        <input type="range" id="svindPct" min="25" max="60" step="1" value="45">
+      </div>
+      <div class="twocol" style="margin-top:16px;">
+        <div class="field"><span class="tinylabel">Kostpris, savet træ — alle kvaliteter (beregnet, €/m³)</span><input type="text" id="kostprisSavetOut" disabled></div>
+        <div class="field"><span class="tinylabel">Kostpris, ovntørret andel (beregnet, €/m³)</span><input type="text" id="kostprisKilnOut" disabled></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Sortering før opsavning</h2>
+      <span class="hint">Andel af stammen der udskilles, inden resten opsaves.</span>
+    </div>
+
+    <div class="panels">
+      <div class="panel">
+        <h3>Vintønde <span class="badge-warn">usikkert marked</span></h3>
+        <p class="sub">Skæres fra til vintøndeproduktion, hvis der er efterspørgsel.</p>
+        <div class="field">
+          <div class="field-row"><label>Andel af stamme</label><span class="val" id="vintondePctVal">8 %</span></div>
+          <input type="range" id="vintondePct" min="0" max="25" step="1" value="8">
+        </div>
+        <div class="twocol">
+          <div class="field"><span class="tinylabel">Salgspris, €/m³</span><input type="number" id="vintondePris" value="2400" step="100"></div>
+          <div class="field"><span class="tinylabel">Volumen</span><input type="text" id="vintondeM3out" disabled></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Brænde / svind <span class="badge-warn">usikkert marked</span></h3>
+        <p class="sub">Kasseret ved vurdering — dels solgt som brænde, dels reelt tab.</p>
+        <div class="field">
+          <div class="field-row"><label>Andel af stamme</label><span class="val" id="braendePctVal">15 %</span></div>
+          <input type="range" id="braendePct" min="0" max="35" step="1" value="15">
+        </div>
+        <div class="twocol">
+          <div class="field"><span class="tinylabel">Salgspris, €/m³ (blandet)</span><input type="number" id="braendePris" value="50" step="5"></div>
+          <div class="field"><span class="tinylabel">Volumen</span><input type="text" id="braendeM3out" disabled></div>
+        </div>
+      </div>
+    </div>
+    <div class="field" style="margin-top:14px;">
+      <div class="field-row"><label>Resterende andel til opsavning</label><span class="val mono" id="restPctVal">77 %</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Kvaliteter af savet træ</h2>
+      <span class="hint">Andele normaliseres automatisk til 100 % af det opsavede volumen. Kostpris er fælles for alle (se ovenfor).</span>
+    </div>
+    <div class="panel">
+      <div class="classtable-wrap">
+        <table class="classtable">
+          <thead><tr><th>Kvalitet</th><th>Andel af savet, %</th><th>Salgspris, €/m³</th><th>Volumen, m³</th></tr></thead>
+          <tbody id="classBody"></tbody>
+        </table>
+      </div>
+      <div class="sumline" id="classSumLine">Sum af indtastede andele: 100 % (normaliseret)</div>
+
+      <hr class="rule">
+      <div class="field-row"><label>Andel af savet træ der ovntørres</label><span class="val" id="ovnPctVal">35 %</span></div>
+      <input type="range" id="ovnPct" min="0" max="100" step="5" value="35">
+      <div class="twocol" style="margin-top:10px;">
+        <div class="field"><span class="tinylabel">Ekstra omk., €/m³</span><input type="number" id="ovnCost" value="90" step="10"></div>
+        <div class="field"><span class="tinylabel">Prispræmie, %</span><input type="number" id="ovnPremium" value="12" step="1"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Værdikæden i tal</h2>
+      <span class="hint" id="resultsHint">Pr. 100 m³ rundtømmer ind — kostpris og salgspris pr. produkt.</span>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi accent"><div class="label">Dækningsbidrag i alt</div><div class="num" id="kpiNetTotal">–</div></div>
+      <div class="kpi accent2"><div class="label">DB pr. m³ rundtømmer</div><div class="num" id="kpiBlended">– <small>€/m³</small></div></div>
+      <div class="kpi"><div class="label">DB-margin</div><div class="num" id="kpiMargin">– %</div></div>
+      <div class="kpi"><div class="label">Savet volumen af rundtømmer ind</div><div class="num" id="kpiSavet">– <small>m³</small></div></div>
+    </div>
+    <p class="kpi-note" id="kpiRawNote">Heraf indkøbs- og sorteringsomkostning på de 100 m³ rundtømmer: –</p>
+
+    <div class="resultstable-wrap">
+      <table class="results">
+        <thead><tr><th>Produkt</th><th class="num">Volumen, m³</th><th class="num">Kostpris, €/m³</th><th class="num">Salgspris, €/m³</th><th class="num">DB, €/m³</th><th class="num">DB, %</th><th class="num">DB total, €</th></tr></thead>
+        <tbody id="resultsBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Vejen fra stamme til savet træ</h2>
+      <button class="reset-btn" id="resetBtn">Nulstil forudsætninger</button>
+    </div>
+    <div class="flow-scroll">
+      <div class="flow" id="flowRow"></div>
+    </div>
+  </section>
+
+  <footer>
+    Alle priser, andele og omkostninger — bortset fra de tal du selv har indtastet — er illustrative udgangspunkter til drøftelse. Vintønde- og brænde/svind-andelene er markeret som markedsafhængige, fordi hverken volumen eller pris kan fastlægges uden aktuel efterspørgsel. Kostprisen for savet træ er beregnet ud fra indkøbs- og sorteringsomkostning, opskaleret med svindprocenten ved opsavning, plus omkostning til opsavning, intern transport og sortering efter opsavning — ens for alle kvaliteter, undtagen den andel der ovntørres. Justeringerne gemmes kun lokalt i din browser.
+  </footer>
+</div>
+
+<script>
+(function () {
+  var CLASSES = [
+    { id: "1st", code: "1★", name: "1 stjerne",               color: "#7ea997", text: "#1c2620" },
+    { id: "2st", code: "2★", name: "2 stjerne",               color: "#5f9484", text: "#f4f7f5" },
+    { id: "3st", code: "3★", name: "3 stjerne",               color: "#417d6d", text: "#f4f7f5" },
+    { id: "4st", code: "4★", name: "4 stjerne",               color: "#2a5c4f", text: "#f4f7f5" },
+    { id: "sve", code: "JS", name: "Jernbanesveller",         color: "#8c6a3f", text: "#f4f7f5" },
+    { id: "bp",  code: "BP", name: "Bordplade / stor dimension", color: "#b8863b", text: "#3a2a10" }
+  ];
+  var DEFAULT_CLASS_PCT   = [17, 28, 22, 12, 15, 6];
+  var DEFAULT_CLASS_PRICE = [220, 380, 600, 820, 480, 1150];
+
+  var VINTOENDE_COLOR = "#c79a4b", VINTOENDE_TEXT = "#3a2a10";
+  var BRAENDE_COLOR   = "#8c6a52", BRAENDE_TEXT   = "#f4efe9";
+
+  var els = {};
+  [
+    "totalM3","kostprisRund","sorteringCost","opsavningCost","transportCost","sorteringEfterCost","svindPct",
+    "vintondePct","vintondePris","braendePct","braendePris","ovnPct","ovnCost","ovnPremium"
+  ].forEach(function (id) { els[id] = document.getElementById(id); });
+
+  var classBody = document.getElementById("classBody");
+  CLASSES.forEach(function (c, i) {
+    var tr = document.createElement("tr");
+    tr.innerHTML =
+      '<td><span class="sw" style="background:' + c.color + '"></span>' + c.name + '</td>' +
+      '<td><input type="number" class="classPct" data-i="' + i + '" min="0" max="100" step="1" value="' + DEFAULT_CLASS_PCT[i] + '"></td>' +
+      '<td><input type="number" class="classPris" data-i="' + i + '" min="0" step="10" value="' + DEFAULT_CLASS_PRICE[i] + '"></td>' +
+      '<td class="mono classM3" data-i="' + i + '">–</td>';
+    classBody.appendChild(tr);
+  });
+
+  var FLOW = [
+    { t: "Stamme ind", s: "heterogen kvalitet" },
+    { t: "Vurdering &amp; opmærkning", s: "pr. stamme" },
+    { t: "Opdeling", s: "vintønde / brænde-svind / opsavning" },
+    { t: "Opsavning", s: "efter markering" },
+    { t: "Lufttørring", s: "uger–måneder" },
+    { t: "Kvalitetsbestemmelse", s: "6 kvaliteter" },
+    { t: "Ovntørring", s: "kun en del af mængden" },
+    { t: "Endelig kvalitetskontrol", s: "" },
+    { t: "Salg til kunde", s: "" }
+  ];
+  var flowRow = document.getElementById("flowRow");
+  FLOW.forEach(function (f, i) {
+    if (i > 0) {
+      var arrow = document.createElement("div");
+      arrow.className = "farrow";
+      flowRow.appendChild(arrow);
+    }
+    var node = document.createElement("div");
+    node.className = "fnode";
+    node.innerHTML = '<div class="dot">' + (i + 1) + '</div><div class="ftitle">' + f.t + '</div>' + (f.s ? '<div class="fsub">' + f.s + '</div>' : '');
+    flowRow.appendChild(node);
+  });
+
+  function fmtEur(n) { return Math.round(n).toLocaleString("da-DK") + " €"; }
+  function fmtM3(n) { return n.toLocaleString("da-DK", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " m³"; }
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+  function getClassInputs() {
+    var pcts = [], prices = [];
+    document.querySelectorAll(".classPct").forEach(function (inp) { pcts[+inp.dataset.i] = parseFloat(inp.value) || 0; });
+    document.querySelectorAll(".classPris").forEach(function (inp) { prices[+inp.dataset.i] = parseFloat(inp.value) || 0; });
+    return { pcts: pcts, prices: prices };
+  }
+
+  function saveState() {
+    try {
+      var state = {};
+      Object.keys(els).forEach(function (id) { state[id] = els[id].value; });
+      state.classPct = getClassInputs().pcts;
+      state.classPris = getClassInputs().prices;
+      localStorage.setItem("egetrae-case-state-v2", JSON.stringify(state));
+    } catch (e) {}
+  }
+
+  function loadState() {
+    try {
+      var raw = localStorage.getItem("egetrae-case-state-v2");
+      if (!raw) return;
+      var s = JSON.parse(raw);
+      if (!s) return;
+      Object.keys(els).forEach(function (id) { if (s[id] !== undefined) els[id].value = s[id]; });
+      if (Array.isArray(s.classPct)) {
+        document.querySelectorAll(".classPct").forEach(function (inp) {
+          var v = s.classPct[+inp.dataset.i]; if (v !== undefined) inp.value = v;
+        });
+      }
+      if (Array.isArray(s.classPris)) {
+        document.querySelectorAll(".classPris").forEach(function (inp) {
+          var v = s.classPris[+inp.dataset.i]; if (v !== undefined) inp.value = v;
+        });
+      }
+    } catch (e) {}
+  }
+
+  function clampSplit(changed) {
+    var v = parseFloat(els.vintondePct.value) || 0;
+    var b = parseFloat(els.braendePct.value) || 0;
+    if (v + b > 95) {
+      if (changed === "vintonde") { v = clamp(v, 0, 95 - b); els.vintondePct.value = v; }
+      else { b = clamp(b, 0, 95 - v); els.braendePct.value = b; }
+    }
+  }
+
+  var segGroup = document.getElementById("segGroup");
+  var labelGroup = document.getElementById("labelGroup");
+  var logLegend = document.getElementById("logLegend");
+  var TRUNK_X = 90, TRUNK_W = 820, TRUNK_Y = 66, TRUNK_H = 128;
+
+  function drawLog(segments) {
+    segGroup.innerHTML = "";
+    labelGroup.innerHTML = "";
+    logLegend.innerHTML = "";
+    var x = TRUNK_X;
+    segments.forEach(function (seg) {
+      var w = (seg.pct / 100) * TRUNK_W;
+      if (w > 0.4) {
+        var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        rect.setAttribute("x", x.toFixed(1));
+        rect.setAttribute("y", TRUNK_Y);
+        rect.setAttribute("width", w.toFixed(1));
+        rect.setAttribute("height", TRUNK_H);
+        rect.setAttribute("fill", seg.color);
+        segGroup.appendChild(rect);
+
+        if (w > 3) {
+          var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          line.setAttribute("x1", x.toFixed(1)); line.setAttribute("x2", x.toFixed(1));
+          line.setAttribute("y1", TRUNK_Y); line.setAttribute("y2", TRUNK_Y + TRUNK_H);
+          line.setAttribute("stroke", "#3a2a15"); line.setAttribute("stroke-opacity", "0.4");
+          line.setAttribute("stroke-width", "1.5"); line.setAttribute("stroke-dasharray", "3,3");
+          labelGroup.appendChild(line);
+        }
+
+        if (w >= 20) {
+          var text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          text.setAttribute("x", (x + w / 2).toFixed(1));
+          text.setAttribute("y", TRUNK_Y + TRUNK_H / 2 + 4);
+          text.setAttribute("text-anchor", "middle");
+          text.setAttribute("font-family", "Archivo, sans-serif");
+          text.setAttribute("font-weight", "800");
+          text.setAttribute("font-size", w > 40 ? "14" : "11");
+          text.setAttribute("fill", seg.text);
+          text.textContent = seg.code;
+          labelGroup.appendChild(text);
+        }
+
+        if (w >= 46) {
+          var pctText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          pctText.setAttribute("x", (x + w / 2).toFixed(1));
+          pctText.setAttribute("y", TRUNK_Y - 10);
+          pctText.setAttribute("text-anchor", "middle");
+          pctText.setAttribute("font-family", "IBM Plex Mono, monospace");
+          pctText.setAttribute("font-weight", "600");
+          pctText.setAttribute("font-size", "11");
+          pctText.setAttribute("fill", "#4a3c26");
+          pctText.textContent = seg.pct.toFixed(1) + "%";
+          labelGroup.appendChild(pctText);
+        }
+      }
+      x += w;
+
+      var item = document.createElement("div");
+      item.className = "item";
+      item.innerHTML = '<span class="sw" style="background:' + seg.color + '"></span>' + seg.name + ' (' + seg.pct.toFixed(1) + '%)';
+      logLegend.appendChild(item);
+    });
+  }
+
+  function render() {
+    clampSplit();
+    var INPUT_M3 = clamp(parseFloat(els.totalM3.value) || 100, 1, 1000000);
+    var kostprisRund = parseFloat(els.kostprisRund.value) || 0;
+    var sorteringCost = parseFloat(els.sorteringCost.value) || 0;
+    var opsavningCost = parseFloat(els.opsavningCost.value) || 0;
+    var transportCost = parseFloat(els.transportCost.value) || 0;
+    var sorteringEfterCost = parseFloat(els.sorteringEfterCost.value) || 0;
+    var svindPct = parseFloat(els.svindPct.value) || 0;
+
+    var vintondePct = parseFloat(els.vintondePct.value) || 0;
+    var vintondePris = parseFloat(els.vintondePris.value) || 0;
+    var braendePct = parseFloat(els.braendePct.value) || 0;
+    var braendePris = parseFloat(els.braendePris.value) || 0;
+    var ovnPct = parseFloat(els.ovnPct.value) || 0;
+    var ovnCost = parseFloat(els.ovnCost.value) || 0;
+    var ovnPremium = parseFloat(els.ovnPremium.value) || 0;
+
+    document.getElementById("svindPctVal").textContent = svindPct + " %";
+    document.getElementById("vintondePctVal").textContent = vintondePct + " %";
+    document.getElementById("braendePctVal").textContent = braendePct + " %";
+    document.getElementById("ovnPctVal").textContent = ovnPct + " %";
+
+    var kostprisBase = kostprisRund + sorteringCost;
+    var yieldFactor = clamp(1 - svindPct / 100, 0.05, 1);
+    var kostprisSavet = (kostprisBase / yieldFactor) + opsavningCost + transportCost + sorteringEfterCost;
+    var kostprisKiln = kostprisSavet + ovnCost;
+    document.getElementById("kostprisBaseOut").value = fmtEur(kostprisBase) + " / m³";
+    document.getElementById("kostprisSavetOut").value = fmtEur(kostprisSavet) + " / m³";
+    document.getElementById("kostprisKilnOut").value = fmtEur(kostprisKiln) + " / m³";
+
+    var restPct = clamp(100 - vintondePct - braendePct, 0, 100);
+    document.getElementById("restPctVal").textContent = restPct.toFixed(0) + " %";
+
+    var vintondeM3 = INPUT_M3 * vintondePct / 100;
+    var braendeM3 = INPUT_M3 * braendePct / 100;
+    var restM3 = INPUT_M3 * restPct / 100;
+    var savetM3 = restM3 * yieldFactor;
+
+    document.getElementById("vintondeM3out").value = fmtM3(vintondeM3);
+    document.getElementById("braendeM3out").value = fmtM3(braendeM3);
+
+    var ci = getClassInputs();
+    var sumPct = ci.pcts.reduce(function (a, b) { return a + b; }, 0) || 1;
+    var normPcts = ci.pcts.map(function (p) { return (p / sumPct) * 100; });
+
+    var sumLine = document.getElementById("classSumLine");
+    var rawSum = ci.pcts.reduce(function (a, b) { return a + b; }, 0);
+    sumLine.textContent = "Sum af indtastede andele: " + rawSum.toFixed(0) + " % → normaliseret til 100 %";
+    sumLine.className = "sumline" + (Math.abs(rawSum - 100) > 0.5 ? " off" : "");
+
+    var classM3 = [], classVal = [], sawnRevenueTotal = 0;
+    CLASSES.forEach(function (c, i) {
+      var m3 = savetM3 * normPcts[i] / 100;
+      var val = m3 * ci.prices[i];
+      classM3[i] = m3; classVal[i] = val;
+      sawnRevenueTotal += val;
+      document.querySelector('.classM3[data-i="' + i + '"]').textContent = fmtM3(m3);
+    });
+
+    var forarbCostTotal = savetM3 * (opsavningCost + transportCost + sorteringEfterCost);
+    var rawCostSawn = restM3 * kostprisBase; // raw+sorting cost consumed to produce savetM3
+    var kostprisSavetTotal = rawCostSawn + forarbCostTotal; // should equal kostprisSavet * savetM3
+
+    var kilnVolume = savetM3 * ovnPct / 100;
+    var avgSalgsprisSavet = savetM3 > 0 ? sawnRevenueTotal / savetM3 : 0;
+    var kilnExtraRevenue = kilnVolume * avgSalgsprisSavet * (ovnPremium / 100);
+    var kilnCostTotal = kilnVolume * ovnCost;
+
+    var vintondeRevenue = vintondeM3 * vintondePris;
+    var braendeRevenue = braendeM3 * braendePris;
+
+    var totalRevenue = vintondeRevenue + braendeRevenue + sawnRevenueTotal + kilnExtraRevenue;
+    var totalCost = (kostprisBase * (vintondeM3 + braendeM3)) + kostprisSavetTotal + kilnCostTotal;
+    var netValue = totalRevenue - totalCost;
+    var blended = netValue / INPUT_M3;
+    var margin = totalRevenue > 0 ? (netValue / totalRevenue) * 100 : 0;
+
+    document.getElementById("kpiNetTotal").textContent = fmtEur(netValue);
+    document.getElementById("kpiBlended").innerHTML = Math.round(blended).toLocaleString("da-DK") + ' <small>€/m³</small>';
+    document.getElementById("kpiMargin").textContent = margin.toFixed(0) + " %";
+    document.getElementById("kpiSavet").innerHTML = savetM3.toLocaleString("da-DK", { maximumFractionDigits: 0 }) + ' <small>m³</small>';
+    document.getElementById("kpiRawNote").textContent = "Heraf indkøbs- og sorteringsomkostning på de " + fmtM3(INPUT_M3) + " rundtømmer: " + fmtEur(kostprisBase * INPUT_M3);
+    document.getElementById("resultsHint").textContent = "Pr. " + fmtM3(INPUT_M3) + " rundtømmer ind — kostpris og salgspris pr. produkt.";
+
+    var rb = document.getElementById("resultsBody");
+    var rows = [];
+    rows.push({ label: "Vintønde", m3: vintondeM3, kost: kostprisBase, pris: vintondePris, val: vintondeRevenue });
+    rows.push({ label: "Brænde / svind", m3: braendeM3, kost: kostprisBase, pris: braendePris, val: braendeRevenue });
+    CLASSES.forEach(function (c, i) {
+      rows.push({ label: c.name, m3: classM3[i], kost: kostprisSavet, pris: ci.prices[i], val: classVal[i] });
+    });
+    var html = rows.map(function (r) {
+      var dbPrM3 = r.pris - r.kost;
+      var dbTotal = r.m3 * dbPrM3;
+      var dbPct = r.pris > 0 ? (dbPrM3 / r.pris) * 100 : 0;
+      return '<tr><td>' + r.label + '</td><td class="num">' + fmtM3(r.m3) + '</td><td class="num">' + Math.round(r.kost).toLocaleString("da-DK") + '</td><td class="num">' + Math.round(r.pris).toLocaleString("da-DK") + '</td><td class="num">' + Math.round(dbPrM3).toLocaleString("da-DK") + '</td><td class="num">' + dbPct.toFixed(0) + ' %</td><td class="num">' + fmtEur(dbTotal) + '</td></tr>';
+    }).join("");
+    var svindVolumen = restM3 - savetM3;
+    var totalSalgsmaengde = vintondeM3 + braendeM3 + savetM3;
+    var sumKostBelob = rows.reduce(function (s, r) { return s + r.m3 * r.kost; }, 0);
+    var sumSalgBelob = rows.reduce(function (s, r) { return s + r.m3 * r.pris; }, 0);
+    var avgKost = totalSalgsmaengde > 0 ? sumKostBelob / totalSalgsmaengde : 0;
+    var avgSalg = totalSalgsmaengde > 0 ? sumSalgBelob / totalSalgsmaengde : 0;
+    var avgDB = avgSalg - avgKost;
+    var avgDBpct = avgSalg > 0 ? (avgDB / avgSalg) * 100 : 0;
+    var avgDBtotal = sumSalgBelob - sumKostBelob;
+    html += '<tr class="subtotal"><td>Svind ved opsavning (tabt ved omsavning til planker)</td><td class="num">' + fmtM3(svindVolumen) + '</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td></tr>';
+    html += '<tr class="subtotal"><td>Solgte cbm (i alt) — gennemsnit</td><td class="num">' + fmtM3(totalSalgsmaengde) + '</td><td class="num">' + Math.round(avgKost).toLocaleString("da-DK") + '</td><td class="num">' + Math.round(avgSalg).toLocaleString("da-DK") + '</td><td class="num">' + Math.round(avgDB).toLocaleString("da-DK") + '</td><td class="num">' + avgDBpct.toFixed(0) + ' %</td><td class="num">' + fmtEur(avgDBtotal) + '</td></tr>';
+    html += '<tr class="subtotal"><td>Ovntørringstillæg (' + kilnVolume.toFixed(1) + ' m³, +' + ovnPremium + '% pris, +' + Math.round(ovnCost).toLocaleString("da-DK") + ' €/m³ omk.)</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">' + fmtEur(kilnExtraRevenue - kilnCostTotal) + '</td></tr>';
+    html += '<tr class="net"><td>Dækningsbidrag i alt, ' + fmtM3(INPUT_M3) + ' rundtømmer ind</td><td class="num">' + fmtM3(INPUT_M3) + '</td><td class="num">–</td><td class="num">–</td><td class="num">' + Math.round(blended).toLocaleString("da-DK") + '</td><td class="num">' + margin.toFixed(0) + ' %</td><td class="num">' + fmtEur(netValue) + '</td></tr>';
+    rb.innerHTML = html;
+
+    var segments = [
+      { pct: vintondePct, color: VINTOENDE_COLOR, text: VINTOENDE_TEXT, code: "V", name: "Vintønde" },
+      { pct: braendePct, color: BRAENDE_COLOR, text: BRAENDE_TEXT, code: "B/S", name: "Brænde / svind" }
+    ];
+    CLASSES.forEach(function (c, i) {
+      segments.push({ pct: restPct * normPcts[i] / 100, color: c.color, text: c.text, code: c.code, name: c.name });
+    });
+    drawLog(segments);
+
+    saveState();
+  }
+
+  document.addEventListener("input", function (e) {
+    if (e.target.closest("section")) render();
+  });
+
+  document.querySelectorAll(".preset-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      els.totalM3.value = btn.dataset.v;
+      render();
+    });
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", function () {
+    try { localStorage.removeItem("egetrae-case-state-v2"); } catch (err) {}
+    els.totalM3.value = 100;
+    els.kostprisRund.value = 160; els.sorteringCost.value = 10;
+    els.opsavningCost.value = 45; els.transportCost.value = 15; els.sorteringEfterCost.value = 12;
+    els.svindPct.value = 45;
+    els.vintondePct.value = 8; els.vintondePris.value = 2400;
+    els.braendePct.value = 15; els.braendePris.value = 50;
+    els.ovnPct.value = 35; els.ovnCost.value = 90; els.ovnPremium.value = 12;
+    document.querySelectorAll(".classPct").forEach(function (inp) { inp.value = DEFAULT_CLASS_PCT[+inp.dataset.i]; });
+    document.querySelectorAll(".classPris").forEach(function (inp) { inp.value = DEFAULT_CLASS_PRICE[+inp.dataset.i]; });
+    render();
+  });
+
+  loadState();
+  render();
+})();
+</script>
