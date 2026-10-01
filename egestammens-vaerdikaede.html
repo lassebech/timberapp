@@ -291,8 +291,8 @@
         <div class="field"><span class="tinylabel">Sortering efter opsavning (€/m³ savet)</span><input type="number" id="sorteringEfterCost" value="12" step="1"></div>
       </div>
       <div class="field" style="margin-top:16px;">
-        <div class="field-row"><label>Svind ved opsavning til planker</label><span class="val" id="svindPctVal">45 %</span></div>
-        <input type="range" id="svindPct" min="25" max="60" step="1" value="45">
+        <div class="field-row"><label>Totalt svind (opsavning, lufttørring og ovntørring samlet)</label><span class="val" id="svindPctVal">45 %</span></div>
+        <input type="range" id="svindPct" min="0" max="70" step="1" value="45">
       </div>
       <div class="twocol" style="margin-top:16px;">
         <div class="field"><span class="tinylabel">Kostpris, savet træ — alle kvaliteter (beregnet, €/m³)</span><input type="text" id="kostprisSavetOut" disabled></div>
@@ -396,7 +396,7 @@
   </section>
 
   <footer>
-    Alle priser, andele og omkostninger — bortset fra de tal du selv har indtastet — er illustrative udgangspunkter til drøftelse. Vintønde- og brænde/svind-andelene er markeret som markedsafhængige, fordi hverken volumen eller pris kan fastlægges uden aktuel efterspørgsel. Kostprisen for savet træ er beregnet ud fra indkøbs- og sorteringsomkostning, opskaleret med svindprocenten ved opsavning, plus omkostning til opsavning, intern transport og sortering efter opsavning — ens for alle kvaliteter, undtagen den andel der ovntørres. Justeringerne gemmes kun lokalt i din browser.
+    Alle priser, andele og omkostninger — bortset fra de tal du selv har indtastet — er illustrative udgangspunkter til drøftelse. Vintønde- og brænde/svind-andelene er markeret som markedsafhængige, fordi hverken volumen eller pris kan fastlægges uden aktuel efterspørgsel. Kostprisen for savet træ er beregnet ud fra indkøbs- og sorteringsomkostning, opskaleret med det totale svind (opsavning, lufttørring og ovntørring samlet), plus omkostning til opsavning, intern transport og sortering efter opsavning — ens for alle kvaliteter, undtagen den andel der ovntørres. Justeringerne gemmes kun lokalt i din browser.
   </footer>
 </div>
 
@@ -679,7 +679,7 @@
     var avgDB = avgSalg - avgKost;
     var avgDBpct = avgSalg > 0 ? (avgDB / avgSalg) * 100 : 0;
     var avgDBtotal = sumSalgBelob - sumKostBelob;
-    html += '<tr class="subtotal"><td>Svind ved opsavning (tabt ved omsavning til planker)</td><td class="num">' + fmtM3(svindVolumen) + '</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td></tr>';
+    html += '<tr class="subtotal"><td>Totalt svind (opsavning, lufttørring og ovntørring)</td><td class="num">' + fmtM3(svindVolumen) + '</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td></tr>';
     html += '<tr class="subtotal"><td>Solgte cbm (i alt) — gennemsnit</td><td class="num">' + fmtM3(totalSalgsmaengde) + '</td><td class="num">' + Math.round(avgKost).toLocaleString("da-DK") + '</td><td class="num">' + Math.round(avgSalg).toLocaleString("da-DK") + '</td><td class="num">' + Math.round(avgDB).toLocaleString("da-DK") + '</td><td class="num">' + avgDBpct.toFixed(0) + ' %</td><td class="num">' + fmtEur(avgDBtotal) + '</td></tr>';
     html += '<tr class="subtotal"><td>Ovntørringstillæg (' + kilnVolume.toFixed(1) + ' m³, +' + ovnPremium + '% pris, +' + Math.round(ovnCost).toLocaleString("da-DK") + ' €/m³ omk.)</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">' + fmtEur(kilnExtraRevenue - kilnCostTotal) + '</td></tr>';
     html += '<tr class="net"><td>Dækningsbidrag i alt, ' + fmtM3(INPUT_M3) + ' rundtømmer ind</td><td class="num">' + fmtM3(INPUT_M3) + '</td><td class="num">–</td><td class="num">–</td><td class="num">' + Math.round(blended).toLocaleString("da-DK") + '</td><td class="num">' + margin.toFixed(0) + ' %</td><td class="num">' + fmtEur(netValue) + '</td></tr>';
