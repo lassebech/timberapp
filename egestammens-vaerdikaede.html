@@ -64,7 +64,7 @@
     font-size: 16px;
     line-height: 1.5;
   }
-  .wrap { max-width: 1200px; margin: 0 auto; padding: 48px 32px 90px; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 32px 32px 90px; }
   h1, h2, h3 {
     font-family: "Archivo", "Arial Narrow", sans-serif;
     font-weight: 800;
@@ -79,6 +79,15 @@
     text-transform: uppercase; color: var(--accent-ink); margin: 0 0 10px;
   }
   .mono { font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace; font-variant-numeric: tabular-nums; }
+
+  .topbar { display: flex; justify-content: flex-end; margin-bottom: 14px; }
+  .lang-toggle { display: inline-flex; gap: 6px; }
+  .lang-btn {
+    font-family: "IBM Plex Mono", monospace; font-size: 12px; background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--ink-soft); padding: 6px 14px; border-radius: 6px; cursor: pointer;
+  }
+  .lang-btn.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-ink); font-weight: 700; }
+  .lang-btn:hover { border-color: var(--accent); }
 
   header { max-width: 780px; }
   header h1 { font-size: clamp(28px, 4vw, 38px); }
@@ -133,11 +142,12 @@
     width: 14px; height: 14px; border-radius: 50%; background: var(--accent); border: 2px solid var(--surface);
     box-shadow: 0 0 0 1px var(--accent); cursor: pointer;
   }
-  input[type="number"] {
+  input[type="number"], input[type="text"] {
     width: 100%; font-family: "IBM Plex Mono", monospace; font-size: 13px;
     background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px;
     padding: 7px 8px; color: var(--ink);
   }
+  input[type="text"].className { font-family: "Source Sans 3", sans-serif; }
   .twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .threecol { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
   .twocol .field, .threecol .field { margin-bottom: 0; }
@@ -152,10 +162,19 @@
   }
   table.classtable td { padding: 7px 8px; border-bottom: 1px solid var(--border); vertical-align: middle; }
   table.classtable tr:last-child td { border-bottom: none; }
-  table.classtable .sw { width: 10px; height: 10px; border-radius: 3px; display: inline-block; margin-right: 7px; }
+  table.classtable .sw { width: 10px; height: 10px; border-radius: 3px; display: inline-block; margin-right: 7px; flex: none; }
+  table.classtable td:first-child { display: table-cell; }
+  table.classtable td:first-child > span.sw { vertical-align: middle; }
   table.classtable input[type="number"] { width: 74px; padding: 5px 6px; }
+  table.classtable input[type="text"].className { min-width: 140px; padding: 5px 6px; display: inline-block; width: calc(100% - 20px); vertical-align: middle; }
   .sumline { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-faint); margin-top: 8px; font-family: "IBM Plex Mono", monospace; }
   .sumline.off { color: var(--warn); }
+  .add-row-row { margin-top: 12px; }
+  button.row-del {
+    font-family: "IBM Plex Mono", monospace; font-size: 13px; line-height: 1; background: var(--warn-soft); color: var(--warn);
+    border: 1px solid transparent; border-radius: 6px; width: 28px; height: 28px; cursor: pointer;
+  }
+  button.row-del:hover { border-color: var(--warn); }
 
   .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 10px; }
   .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
@@ -164,7 +183,10 @@
   .kpi .num small { font-family: "IBM Plex Mono", monospace; font-weight: 500; font-size: 13px; color: var(--ink-faint); }
   .kpi.accent { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 35%, var(--border)); }
   .kpi.accent2 { background: var(--accent2-soft); border-color: color-mix(in srgb, var(--accent2) 35%, var(--border)); }
-  .kpi-note { font-size: 12px; color: var(--ink-faint); margin: 0 0 22px; }
+  .kpi-note { font-size: 12px; color: var(--ink-faint); margin: 0 0 18px; }
+
+  .export-row { display: flex; align-items: center; gap: 12px; margin: 0 0 18px; flex-wrap: wrap; }
+  .export-status { font-size: 12.5px; color: var(--ink-faint); }
 
   .resultstable-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 4px 20px 14px; }
   table.results { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 800px; }
@@ -200,19 +222,27 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Source+Sans+3:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <div class="wrap">
 
+  <div class="topbar">
+    <div class="lang-toggle">
+      <button type="button" class="lang-btn" id="langDaBtn" data-lang="da">DA</button>
+      <button type="button" class="lang-btn" id="langDeBtn" data-lang="de">DE</button>
+    </div>
+  </div>
+
   <header>
-    <p class="eyebrow">Uddybende case · Frankrig &amp; Tyskland-lageret</p>
-    <h1>Egestammens værdikæde</h1>
-    <p class="lede">Hver egestamme er sit eget lille produkt: en uhomogen råvare, der vurderes og opmærkes stamme for stamme, før den kan sælges eller opsaves. Modellen bygger nu på jeres egne kostpriser — indkøb, sortering, opsavning, intern transport — og de faktiske kvaliteter I sorterer det savede træ i.</p>
+    <p class="eyebrow" data-i18n="eyebrow">Uddybende case · Frankrig &amp; Tyskland-lageret</p>
+    <h1 data-i18n="h1">Egestammens værdikæde</h1>
+    <p class="lede" data-i18n="lede">Hver egestamme er sit eget lille produkt: en uhomogen råvare, der vurderes og opmærkes stamme for stamme, før den kan sælges eller opsaves. Modellen bygger nu på jeres egne kostpriser — indkøb, sortering, opsavning, intern transport — og de faktiske kvaliteter I sorterer det savede træ i.</p>
   </header>
 
   <section>
     <div class="panel" style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:20px; justify-content:space-between;">
       <div class="field" style="max-width:300px; margin-bottom:0;">
-        <span class="tinylabel">Total mængde rundtømmer til beregning (m³)</span>
+        <span class="tinylabel" data-i18n="totalLabel">Total mængde rundtømmer til beregning (m³)</span>
         <input type="number" id="totalM3" value="100" min="1" step="1">
       </div>
       <div style="display:flex; gap:8px; flex-wrap:wrap;">
@@ -227,20 +257,20 @@
   <section>
     <div class="diffgrid">
       <div class="diffcard">
-        <h3>Hvorfor det ikke bare er endnu et trin</h3>
-        <p>Værditrappen antager ensartede enheder, der flytter sig opad. Her er hver stamme forskellig — beslutningen om, hvad den skal blive til, tages individuelt og markeres fysisk på stammen, før saven går i gang.</p>
+        <h3 data-i18n="diff1Title">Hvorfor det ikke bare er endnu et trin</h3>
+        <p data-i18n="diff1Body">Værditrappen antager ensartede enheder, der flytter sig opad. Her er hver stamme forskellig — beslutningen om, hvad den skal blive til, tages individuelt og markeres fysisk på stammen, før saven går i gang.</p>
       </div>
       <div class="diffcard">
-        <h3>Én kostpris for alt savet træ</h3>
-        <p>Alt det opsavede træ bærer samme kostpris pr. m³ — uanset om det ender som 1 stjerne eller bordplade. Kun salgsprisen adskiller kvaliteterne, og kun ovntørring lægger en ekstra omkostning oven i for den delmængde.</p>
+        <h3 data-i18n="diff2Title">Én kostpris for alt savet træ</h3>
+        <p data-i18n="diff2Body">Alt det opsavede træ bærer samme kostpris pr. m³ — uanset om det ender som 1 stjerne eller bordplade. Kun salgsprisen adskiller kvaliteterne, og kun ovntørring lægger en ekstra omkostning oven i for den delmængde.</p>
       </div>
     </div>
   </section>
 
   <section>
     <div class="section-head">
-      <h2>Stammen — vurdering og opmærkning</h2>
-      <span class="hint">Segmenternes bredde følger forudsætningerne nedenfor og opdateres live.</span>
+      <h2 data-i18n="sec1Title">Stammen — vurdering og opmærkning</h2>
+      <span class="hint" data-i18n="sec1Hint">Segmenternes bredde følger forudsætningerne nedenfor og opdateres live.</span>
     </div>
     <div class="logpanel">
       <svg id="logSvg" viewBox="0 0 1000 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustration af en egestamme opdelt i segmenter efter anvendelse">
@@ -275,111 +305,131 @@
 
   <section>
     <div class="section-head">
-      <h2>Kostpriser &amp; procesomkostninger</h2>
-      <span class="hint">Jeres egne tal — alt i euro pr. m³.</span>
+      <h2 data-i18n="sec2Title">Kostpriser &amp; procesomkostninger</h2>
+      <span class="hint" data-i18n="sec2Hint">Jeres egne tal — alt i euro pr. m³.</span>
     </div>
     <div class="panel">
       <div class="threecol">
-        <div class="field"><span class="tinylabel">Indkøbt kostpris rundtømmer, inkl. transport til lager (€/m³)</span><input type="number" id="kostprisRund" value="160" step="5"></div>
-        <div class="field"><span class="tinylabel">Sortering før opsavning (€/m³)</span><input type="number" id="sorteringCost" value="10" step="1"></div>
-        <div class="field"><span class="tinylabel">Kostpris rundtømmer + sortering (beregnet)</span><input type="text" id="kostprisBaseOut" disabled></div>
+        <div class="field"><span class="tinylabel" data-i18n="lblKostprisRund">Indkøbt kostpris rundtømmer, inkl. transport til lager (€/m³)</span><input type="number" id="kostprisRund" value="160" step="5"></div>
+        <div class="field"><span class="tinylabel" data-i18n="lblSorteringCost">Sortering før opsavning (€/m³)</span><input type="number" id="sorteringCost" value="10" step="1"></div>
+        <div class="field"><span class="tinylabel" data-i18n="lblKostprisBase">Kostpris rundtømmer + sortering (beregnet)</span><input type="text" id="kostprisBaseOut" disabled></div>
       </div>
       <hr class="rule">
       <div class="threecol">
-        <div class="field"><span class="tinylabel">Opsavning (€/m³ savet)</span><input type="number" id="opsavningCost" value="45" step="5"></div>
-        <div class="field"><span class="tinylabel">Intern transport mellem led (€/m³ savet)</span><input type="number" id="transportCost" value="15" step="5"></div>
-        <div class="field"><span class="tinylabel">Sortering efter opsavning (€/m³ savet)</span><input type="number" id="sorteringEfterCost" value="12" step="1"></div>
+        <div class="field"><span class="tinylabel" data-i18n="lblOpsavning">Opsavning (€/m³ savet)</span><input type="number" id="opsavningCost" value="45" step="5"></div>
+        <div class="field"><span class="tinylabel" data-i18n="lblTransport">Intern transport mellem led (€/m³ savet)</span><input type="number" id="transportCost" value="15" step="5"></div>
+        <div class="field"><span class="tinylabel" data-i18n="lblSorteringEfter">Sortering efter opsavning (€/m³ savet)</span><input type="number" id="sorteringEfterCost" value="12" step="1"></div>
       </div>
       <div class="field" style="margin-top:16px;">
-        <div class="field-row"><label>Totalt svind (opsavning, lufttørring og ovntørring samlet)</label><span class="val" id="svindPctVal">45 %</span></div>
+        <div class="field-row"><label data-i18n="lblSvind">Totalt svind (opsavning, lufttørring og ovntørring)</label><span class="val" id="svindPctVal">45 %</span></div>
         <input type="range" id="svindPct" min="0" max="70" step="1" value="45">
       </div>
       <div class="twocol" style="margin-top:16px;">
-        <div class="field"><span class="tinylabel">Kostpris, savet træ — alle kvaliteter (beregnet, €/m³)</span><input type="text" id="kostprisSavetOut" disabled></div>
-        <div class="field"><span class="tinylabel">Kostpris, ovntørret andel (beregnet, €/m³)</span><input type="text" id="kostprisKilnOut" disabled></div>
+        <div class="field"><span class="tinylabel" data-i18n="lblKostprisSavet">Kostpris, savet træ — alle kvaliteter (beregnet, €/m³)</span><input type="text" id="kostprisSavetOut" disabled></div>
+        <div class="field"><span class="tinylabel" data-i18n="lblKostprisKiln">Kostpris, ovntørret andel (beregnet, €/m³)</span><input type="text" id="kostprisKilnOut" disabled></div>
       </div>
     </div>
   </section>
 
   <section>
     <div class="section-head">
-      <h2>Sortering før opsavning</h2>
-      <span class="hint">Andel af stammen der udskilles, inden resten opsaves.</span>
+      <h2 data-i18n="sec3Title">Sortering før opsavning</h2>
+      <span class="hint" data-i18n="sec3Hint">Andel af stammen der udskilles, inden resten opsaves.</span>
     </div>
 
     <div class="panels">
       <div class="panel">
-        <h3>Vintønde <span class="badge-warn">usikkert marked</span></h3>
-        <p class="sub">Skæres fra til vintøndeproduktion, hvis der er efterspørgsel.</p>
+        <h3><span data-i18n="vintH3">Vintønde</span> <span class="badge-warn" data-i18n="badgeUncertain">usikkert marked</span></h3>
+        <p class="sub" data-i18n="vintSub">Skæres fra til vintøndeproduktion, hvis der er efterspørgsel.</p>
         <div class="field">
-          <div class="field-row"><label>Andel af stamme</label><span class="val" id="vintondePctVal">8 %</span></div>
+          <div class="field-row"><label data-i18n="lblAndelStamme">Andel af stamme</label><span class="val" id="vintondePctVal">8 %</span></div>
           <input type="range" id="vintondePct" min="0" max="25" step="1" value="8">
         </div>
         <div class="twocol">
-          <div class="field"><span class="tinylabel">Salgspris, €/m³</span><input type="number" id="vintondePris" value="2400" step="100"></div>
-          <div class="field"><span class="tinylabel">Volumen</span><input type="text" id="vintondeM3out" disabled></div>
+          <div class="field"><span class="tinylabel" data-i18n="lblSalgsprisM3">Salgspris, €/m³</span><input type="number" id="vintondePris" value="2400" step="100"></div>
+          <div class="field"><span class="tinylabel" data-i18n="lblVolumen">Volumen</span><input type="text" id="vintondeM3out" disabled></div>
         </div>
       </div>
 
       <div class="panel">
-        <h3>Brænde / svind <span class="badge-warn">usikkert marked</span></h3>
-        <p class="sub">Kasseret ved vurdering — dels solgt som brænde, dels reelt tab.</p>
+        <h3><span data-i18n="braendeH3">Brænde / svind</span> <span class="badge-warn" data-i18n="badgeUncertain">usikkert marked</span></h3>
+        <p class="sub" data-i18n="braendeSub">Kasseret ved vurdering — dels solgt som brænde, dels reelt tab.</p>
         <div class="field">
-          <div class="field-row"><label>Andel af stamme</label><span class="val" id="braendePctVal">15 %</span></div>
+          <div class="field-row"><label data-i18n="lblAndelStamme">Andel af stamme</label><span class="val" id="braendePctVal">15 %</span></div>
           <input type="range" id="braendePct" min="0" max="35" step="1" value="15">
         </div>
         <div class="twocol">
-          <div class="field"><span class="tinylabel">Salgspris, €/m³ (blandet)</span><input type="number" id="braendePris" value="50" step="5"></div>
-          <div class="field"><span class="tinylabel">Volumen</span><input type="text" id="braendeM3out" disabled></div>
+          <div class="field"><span class="tinylabel" data-i18n="lblSalgsprisBlandet">Salgspris, €/m³ (blandet)</span><input type="number" id="braendePris" value="50" step="5"></div>
+          <div class="field"><span class="tinylabel" data-i18n="lblVolumen">Volumen</span><input type="text" id="braendeM3out" disabled></div>
         </div>
       </div>
     </div>
     <div class="field" style="margin-top:14px;">
-      <div class="field-row"><label>Resterende andel til opsavning</label><span class="val mono" id="restPctVal">77 %</span></div>
+      <div class="field-row"><label data-i18n="lblRestPct">Resterende andel til opsavning</label><span class="val mono" id="restPctVal">77 %</span></div>
     </div>
   </section>
 
   <section>
     <div class="section-head">
-      <h2>Kvaliteter af savet træ</h2>
-      <span class="hint">Andele normaliseres automatisk til 100 % af det opsavede volumen. Kostpris er fælles for alle (se ovenfor).</span>
+      <h2 data-i18n="sec4Title">Kvaliteter af savet træ</h2>
+      <span class="hint" data-i18n="sec4Hint">Andele normaliseres automatisk til 100 % af det opsavede volumen. Kostpris er fælles for alle (se ovenfor).</span>
     </div>
     <div class="panel">
       <div class="classtable-wrap">
         <table class="classtable">
-          <thead><tr><th>Kvalitet</th><th>Andel af savet, %</th><th>Salgspris, €/m³</th><th>Volumen, m³</th></tr></thead>
+          <thead><tr>
+            <th data-i18n="thKvalitet">Kvalitet</th>
+            <th data-i18n="thAndelSavet">Andel af savet, %</th>
+            <th data-i18n="thSalgspris">Salgspris, €/m³</th>
+            <th data-i18n="thVolumen">Volumen, m³</th>
+            <th data-i18n="thFjern">Fjern</th>
+          </tr></thead>
           <tbody id="classBody"></tbody>
         </table>
       </div>
       <div class="sumline" id="classSumLine">Sum af indtastede andele: 100 % (normaliseret)</div>
+      <div class="add-row-row"><button type="button" class="reset-btn" id="addRowBtn" data-i18n="btnAddRow">+ Tilføj kvalitet</button></div>
 
       <hr class="rule">
-      <div class="field-row"><label>Andel af savet træ der ovntørres</label><span class="val" id="ovnPctVal">35 %</span></div>
+      <div class="field-row"><label data-i18n="lblOvnPct">Andel af savet træ der ovntørres</label><span class="val" id="ovnPctVal">35 %</span></div>
       <input type="range" id="ovnPct" min="0" max="100" step="5" value="35">
       <div class="twocol" style="margin-top:10px;">
-        <div class="field"><span class="tinylabel">Ekstra omk., €/m³</span><input type="number" id="ovnCost" value="90" step="10"></div>
-        <div class="field"><span class="tinylabel">Prispræmie, %</span><input type="number" id="ovnPremium" value="12" step="1"></div>
+        <div class="field"><span class="tinylabel" data-i18n="lblOvnCost">Ekstra omk., €/m³</span><input type="number" id="ovnCost" value="90" step="10"></div>
+        <div class="field"><span class="tinylabel" data-i18n="lblOvnPremium">Prispræmie, %</span><input type="number" id="ovnPremium" value="12" step="1"></div>
       </div>
     </div>
   </section>
 
   <section>
     <div class="section-head">
-      <h2>Værdikæden i tal</h2>
+      <h2 data-i18n="sec5Title">Værdikæden i tal</h2>
       <span class="hint" id="resultsHint">Pr. 100 m³ rundtømmer ind — kostpris og salgspris pr. produkt.</span>
     </div>
 
     <div class="kpis">
-      <div class="kpi accent"><div class="label">Dækningsbidrag i alt</div><div class="num" id="kpiNetTotal">–</div></div>
-      <div class="kpi accent2"><div class="label">DB pr. m³ rundtømmer</div><div class="num" id="kpiBlended">– <small>€/m³</small></div></div>
-      <div class="kpi"><div class="label">DB-margin</div><div class="num" id="kpiMargin">– %</div></div>
-      <div class="kpi"><div class="label">Savet volumen af rundtømmer ind</div><div class="num" id="kpiSavet">– <small>m³</small></div></div>
+      <div class="kpi accent"><div class="label" data-i18n="kpiNetLabel">Dækningsbidrag i alt</div><div class="num" id="kpiNetTotal">–</div></div>
+      <div class="kpi accent2"><div class="label" data-i18n="kpiBlendedLabel">DB pr. m³ rundtømmer</div><div class="num" id="kpiBlended">– <small>€/m³</small></div></div>
+      <div class="kpi"><div class="label" data-i18n="kpiMarginLabel">DB-margin</div><div class="num" id="kpiMargin">– %</div></div>
+      <div class="kpi"><div class="label" data-i18n="kpiSavetLabel">Savet volumen af rundtømmer ind</div><div class="num" id="kpiSavet">– <small>m³</small></div></div>
     </div>
     <p class="kpi-note" id="kpiRawNote">Heraf indkøbs- og sorteringsomkostning på de 100 m³ rundtømmer: –</p>
 
+    <div class="export-row">
+      <button type="button" class="reset-btn" id="exportBtn" data-i18n="btnExport">Eksporter til Excel</button>
+      <span class="export-status" id="exportStatus"></span>
+    </div>
+
     <div class="resultstable-wrap">
       <table class="results">
-        <thead><tr><th>Produkt</th><th class="num">Volumen, m³</th><th class="num">Kostpris, €/m³</th><th class="num">Salgspris, €/m³</th><th class="num">DB, €/m³</th><th class="num">DB, %</th><th class="num">DB total, €</th></tr></thead>
+        <thead><tr>
+          <th data-i18n="thProdukt">Produkt</th>
+          <th class="num" data-i18n="thVolumen">Volumen, m³</th>
+          <th class="num" data-i18n="thKostprisM3">Kostpris, €/m³</th>
+          <th class="num" data-i18n="thSalgspris">Salgspris, €/m³</th>
+          <th class="num" data-i18n="thDbM3">DB, €/m³</th>
+          <th class="num" data-i18n="thDbPct">DB, %</th>
+          <th class="num" data-i18n="thDbTotal">DB total, €</th>
+        </tr></thead>
         <tbody id="resultsBody"></tbody>
       </table>
     </div>
@@ -387,31 +437,213 @@
 
   <section>
     <div class="section-head">
-      <h2>Vejen fra stamme til savet træ</h2>
-      <button class="reset-btn" id="resetBtn">Nulstil forudsætninger</button>
+      <h2 data-i18n="sec6Title">Vejen fra stamme til savet træ</h2>
+      <button class="reset-btn" id="resetBtn" data-i18n="btnReset">Nulstil forudsætninger</button>
     </div>
     <div class="flow-scroll">
       <div class="flow" id="flowRow"></div>
     </div>
   </section>
 
-  <footer>
+  <footer data-i18n="footerText">
     Alle priser, andele og omkostninger — bortset fra de tal du selv har indtastet — er illustrative udgangspunkter til drøftelse. Vintønde- og brænde/svind-andelene er markeret som markedsafhængige, fordi hverken volumen eller pris kan fastlægges uden aktuel efterspørgsel. Kostprisen for savet træ er beregnet ud fra indkøbs- og sorteringsomkostning, opskaleret med det totale svind (opsavning, lufttørring og ovntørring samlet), plus omkostning til opsavning, intern transport og sortering efter opsavning — ens for alle kvaliteter, undtagen den andel der ovntørres. Justeringerne gemmes kun lokalt i din browser.
   </footer>
 </div>
 
 <script>
 (function () {
-  var CLASSES = [
-    { id: "1st", code: "1★", name: "1 stjerne",               color: "#7ea997", text: "#1c2620" },
-    { id: "2st", code: "2★", name: "2 stjerne",               color: "#5f9484", text: "#f4f7f5" },
-    { id: "3st", code: "3★", name: "3 stjerne",               color: "#417d6d", text: "#f4f7f5" },
-    { id: "4st", code: "4★", name: "4 stjerne",               color: "#2a5c4f", text: "#f4f7f5" },
-    { id: "sve", code: "JS", name: "Jernbanesveller",         color: "#8c6a3f", text: "#f4f7f5" },
-    { id: "bp",  code: "BP", name: "Bordplade / stor dimension", color: "#b8863b", text: "#3a2a10" }
+  // ---------- Translations ----------
+  var T = {
+    da: {
+      eyebrow: "Uddybende case · Frankrig & Tyskland-lageret",
+      h1: "Egestammens værdikæde",
+      lede: "Hver egestamme er sit eget lille produkt: en uhomogen råvare, der vurderes og opmærkes stamme for stamme, før den kan sælges eller opsaves. Modellen bygger nu på jeres egne kostpriser — indkøb, sortering, opsavning, intern transport — og de faktiske kvaliteter I sorterer det savede træ i.",
+      totalLabel: "Total mængde rundtømmer til beregning (m³)",
+      diff1Title: "Hvorfor det ikke bare er endnu et trin",
+      diff1Body: "Værditrappen antager ensartede enheder, der flytter sig opad. Her er hver stamme forskellig — beslutningen om, hvad den skal blive til, tages individuelt og markeres fysisk på stammen, før saven går i gang.",
+      diff2Title: "Én kostpris for alt savet træ",
+      diff2Body: "Alt det opsavede træ bærer samme kostpris pr. m³ — uanset om det ender som 1 stjerne eller bordplade. Kun salgsprisen adskiller kvaliteterne, og kun ovntørring lægger en ekstra omkostning oven i for den delmængde.",
+      sec1Title: "Stammen — vurdering og opmærkning",
+      sec1Hint: "Segmenternes bredde følger forudsætningerne nedenfor og opdateres live.",
+      svgAria: "Illustration af en egestamme opdelt i segmenter efter anvendelse",
+      sec2Title: "Kostpriser & procesomkostninger",
+      sec2Hint: "Jeres egne tal — alt i euro pr. m³.",
+      lblKostprisRund: "Indkøbt kostpris rundtømmer, inkl. transport til lager (€/m³)",
+      lblSorteringCost: "Sortering før opsavning (€/m³)",
+      lblKostprisBase: "Kostpris rundtømmer + sortering (beregnet)",
+      lblOpsavning: "Opsavning (€/m³ savet)",
+      lblTransport: "Intern transport mellem led (€/m³ savet)",
+      lblSorteringEfter: "Sortering efter opsavning (€/m³ savet)",
+      lblSvind: "Totalt svind (opsavning, lufttørring og ovntørring)",
+      lblKostprisSavet: "Kostpris, savet træ — alle kvaliteter (beregnet, €/m³)",
+      lblKostprisKiln: "Kostpris, ovntørret andel (beregnet, €/m³)",
+      sec3Title: "Sortering før opsavning",
+      sec3Hint: "Andel af stammen der udskilles, inden resten opsaves.",
+      vintH3: "Vintønde",
+      badgeUncertain: "usikkert marked",
+      vintSub: "Skæres fra til vintøndeproduktion, hvis der er efterspørgsel.",
+      lblAndelStamme: "Andel af stamme",
+      lblSalgsprisM3: "Salgspris, €/m³",
+      lblVolumen: "Volumen",
+      braendeH3: "Brænde / svind",
+      braendeSub: "Kasseret ved vurdering — dels solgt som brænde, dels reelt tab.",
+      lblSalgsprisBlandet: "Salgspris, €/m³ (blandet)",
+      lblRestPct: "Resterende andel til opsavning",
+      sec4Title: "Kvaliteter af savet træ",
+      sec4Hint: "Andele normaliseres automatisk til 100 % af det opsavede volumen. Kostpris er fælles for alle (se ovenfor).",
+      thKvalitet: "Kvalitet",
+      thAndelSavet: "Andel af savet, %",
+      thSalgspris: "Salgspris, €/m³",
+      thVolumen: "Volumen, m³",
+      thFjern: "Fjern",
+      btnAddRow: "+ Tilføj kvalitet",
+      placeholderName: "Navn på kvalitet",
+      lblOvnPct: "Andel af savet træ der ovntørres",
+      lblOvnCost: "Ekstra omk., €/m³",
+      lblOvnPremium: "Prispræmie, %",
+      sec5Title: "Værdikæden i tal",
+      kpiNetLabel: "Dækningsbidrag i alt",
+      kpiBlendedLabel: "DB pr. m³ rundtømmer",
+      kpiMarginLabel: "DB-margin",
+      kpiSavetLabel: "Savet volumen af rundtømmer ind",
+      btnExport: "Eksporter til Excel",
+      exportSaved: "Gemt.",
+      exportDeclined: "Afvist.",
+      exportError: "Kunne ikke eksportere.",
+      thProdukt: "Produkt",
+      thKostprisM3: "Kostpris, €/m³",
+      thDbM3: "DB, €/m³",
+      thDbPct: "DB, %",
+      thDbTotal: "DB total, €",
+      sec6Title: "Vejen fra stamme til savet træ",
+      btnReset: "Nulstil forudsætninger",
+      footerText: "Alle priser, andele og omkostninger — bortset fra de tal du selv har indtastet — er illustrative udgangspunkter til drøftelse. Vintønde- og brænde/svind-andelene er markeret som markedsafhængige, fordi hverken volumen eller pris kan fastlægges uden aktuel efterspørgsel. Kostprisen for savet træ er beregnet ud fra indkøbs- og sorteringsomkostning, opskaleret med det totale svind (opsavning, lufttørring og ovntørring samlet), plus omkostning til opsavning, intern transport og sortering efter opsavning — ens for alle kvaliteter, undtagen den andel der ovntørres. Justeringerne gemmes kun lokalt i din browser.",
+      cls1: "1 stjerne", cls2: "2 stjerne", cls3: "3 stjerne", cls4: "4 stjerne", cls5: "Jernbanesveller", cls6: "Bordplade / stor dimension",
+      sheetAssumptions: "Forudsætninger", sheetQualities: "Kvaliteter", sheetResults: "Resultater",
+      rowSolgte: "Solgte cbm (i alt) — gennemsnit",
+      flow: [
+        { t: "Stamme ind", s: "heterogen kvalitet" },
+        { t: "Vurdering &amp; opmærkning", s: "pr. stamme" },
+        { t: "Opdeling", s: "vintønde / brænde-svind / opsavning" },
+        { t: "Opsavning", s: "efter markering" },
+        { t: "Lufttørring", s: "uger–måneder" },
+        { t: "Kvalitetsbestemmelse", s: "flere kvaliteter" },
+        { t: "Ovntørring", s: "kun en del af mængden" },
+        { t: "Endelig kvalitetskontrol", s: "" },
+        { t: "Salg til kunde", s: "" }
+      ],
+      sumline: function (sum) { return "Sum af indtastede andele: " + sum + " % → normaliseret til 100 %"; },
+      resultsHint: function (m3str) { return "Pr. " + m3str + " rundtømmer ind — kostpris og salgspris pr. produkt."; },
+      kpiRawNote: function (m3str, costStr) { return "Heraf indkøbs- og sorteringsomkostning på de " + m3str + " rundtømmer: " + costStr; },
+      rowOvn: function (vol, premium, cost) { return "Ovntørringstillæg (" + vol + " m³, +" + premium + "% pris, +" + cost + " €/m³ omk.)"; },
+      rowNet: function (m3str) { return "Dækningsbidrag i alt, " + m3str + " rundtømmer ind"; }
+    },
+    de: {
+      eyebrow: "Vertiefender Case · Lager Frankreich & Deutschland",
+      h1: "Die Wertschöpfungskette des Eichenstamms",
+      lede: "Jeder Eichenstamm ist sein eigenes kleines Produkt: ein uneinheitlicher Rohstoff, der Stamm für Stamm begutachtet und markiert wird, bevor er verkauft oder eingeschnitten werden kann. Das Modell basiert nun auf euren eigenen Einstandspreisen — Einkauf, Sortierung, Einschnitt, interner Transport — und den tatsächlichen Qualitäten, in die ihr das Schnittholz sortiert.",
+      totalLabel: "Gesamtmenge Rundholz für die Berechnung (m³)",
+      diff1Title: "Warum es nicht einfach eine weitere Stufe ist",
+      diff1Body: "Die Wertschöpfungstreppe setzt einheitliche Einheiten voraus, die nach oben wandern. Hier ist jeder Stamm anders — die Entscheidung, was aus ihm werden soll, wird individuell getroffen und physisch auf dem Stamm markiert, bevor die Säge läuft.",
+      diff2Title: "Ein Einstandspreis für alles Schnittholz",
+      diff2Body: "Das gesamte eingeschnittene Holz trägt denselben Einstandspreis pro m³ — unabhängig davon, ob es als 1-Stern-Qualität oder als Tischplatte endet. Nur der Verkaufspreis unterscheidet die Qualitäten, und nur die Kammertrocknung verursacht für diesen Teil zusätzliche Kosten.",
+      sec1Title: "Der Stamm — Begutachtung und Markierung",
+      sec1Hint: "Die Breite der Segmente folgt den Annahmen unten und aktualisiert sich live.",
+      svgAria: "Darstellung eines Eichenstamms, unterteilt in Segmente nach Verwendung",
+      sec2Title: "Einstandspreise & Prozesskosten",
+      sec2Hint: "Eure eigenen Zahlen — alles in Euro pro m³.",
+      lblKostprisRund: "Einstandspreis Rundholz, inkl. Transport ins Lager (€/m³)",
+      lblSorteringCost: "Sortierung vor dem Einschnitt (€/m³)",
+      lblKostprisBase: "Einstandspreis Rundholz + Sortierung (berechnet)",
+      lblOpsavning: "Einschnitt (€/m³ Schnittholz)",
+      lblTransport: "Interner Transport zwischen den Stufen (€/m³ Schnittholz)",
+      lblSorteringEfter: "Sortierung nach dem Einschnitt (€/m³ Schnittholz)",
+      lblSvind: "Gesamtschwund (Einschnitt, Luft- und Kammertrocknung)",
+      lblKostprisSavet: "Einstandspreis Schnittholz — alle Qualitäten (berechnet, €/m³)",
+      lblKostprisKiln: "Einstandspreis, kammergetrockneter Anteil (berechnet, €/m³)",
+      sec3Title: "Sortierung vor dem Einschnitt",
+      sec3Hint: "Anteil des Stamms, der ausgeschieden wird, bevor der Rest eingeschnitten wird.",
+      vintH3: "Fassholz",
+      badgeUncertain: "unsicherer Markt",
+      vintSub: "Wird für die Fassproduktion ausgeschnitten, sofern Nachfrage besteht.",
+      lblAndelStamme: "Anteil am Stamm",
+      lblSalgsprisM3: "Verkaufspreis, €/m³",
+      lblVolumen: "Volumen",
+      braendeH3: "Brennholz / Schwund",
+      braendeSub: "Bei der Begutachtung ausgesondert — teils als Brennholz verkauft, teils echter Verlust.",
+      lblSalgsprisBlandet: "Verkaufspreis, €/m³ (gemischt)",
+      lblRestPct: "Verbleibender Anteil für den Einschnitt",
+      sec4Title: "Qualitäten des Schnittholzes",
+      sec4Hint: "Anteile werden automatisch auf 100 % des eingeschnittenen Volumens normalisiert. Der Einstandspreis ist für alle gleich (siehe oben).",
+      thKvalitet: "Qualität",
+      thAndelSavet: "Anteil am Schnittholz, %",
+      thSalgspris: "Verkaufspreis, €/m³",
+      thVolumen: "Volumen, m³",
+      thFjern: "Entfernen",
+      btnAddRow: "+ Qualität hinzufügen",
+      placeholderName: "Name der Qualität",
+      lblOvnPct: "Anteil des Schnittholzes, der kammergetrocknet wird",
+      lblOvnCost: "Zusatzkosten, €/m³",
+      lblOvnPremium: "Preisaufschlag, %",
+      sec5Title: "Die Wertschöpfungskette in Zahlen",
+      kpiNetLabel: "Deckungsbeitrag insgesamt",
+      kpiBlendedLabel: "DB pro m³ Rundholz",
+      kpiMarginLabel: "DB-Marge",
+      kpiSavetLabel: "Geschnittenes Volumen des eingesetzten Rundholzes",
+      btnExport: "Nach Excel exportieren",
+      exportSaved: "Gespeichert.",
+      exportDeclined: "Abgelehnt.",
+      exportError: "Export fehlgeschlagen.",
+      thProdukt: "Produkt",
+      thKostprisM3: "Einstandspreis, €/m³",
+      thDbM3: "DB, €/m³",
+      thDbPct: "DB, %",
+      thDbTotal: "DB gesamt, €",
+      sec6Title: "Der Weg vom Stamm zum Schnittholz",
+      btnReset: "Annahmen zurücksetzen",
+      footerText: "Alle Preise, Anteile und Kosten — mit Ausnahme der von dir selbst eingegebenen Zahlen — sind illustrative Ausgangspunkte zur Diskussion. Die Anteile für Fassholz und Brennholz/Schwund sind als marktabhängig markiert, da weder Volumen noch Preis ohne aktuelle Nachfrage festgelegt werden können. Der Einstandspreis für Schnittholz wird aus Einkaufs- und Sortierkosten berechnet, hochskaliert um den Gesamtschwund (Einschnitt, Luft- und Kammertrocknung zusammen), zuzüglich Kosten für Einschnitt, internen Transport und Sortierung nach dem Einschnitt — gleich für alle Qualitäten außer dem kammergetrockneten Anteil. Die Anpassungen werden nur lokal in deinem Browser gespeichert.",
+      cls1: "1 Stern", cls2: "2 Sterne", cls3: "3 Sterne", cls4: "4 Sterne", cls5: "Bahnschwellen", cls6: "Tischplatte / Großdimension",
+      sheetAssumptions: "Annahmen", sheetQualities: "Qualitäten", sheetResults: "Ergebnisse",
+      rowSolgte: "Verkaufte m³ (gesamt) — Durchschnitt",
+      flow: [
+        { t: "Stamm eingehend", s: "heterogene Qualität" },
+        { t: "Begutachtung &amp; Markierung", s: "je Stamm" },
+        { t: "Aufteilung", s: "Fassholz / Brennholz-Schwund / Einschnitt" },
+        { t: "Einschnitt", s: "nach Markierung" },
+        { t: "Lufttrocknung", s: "Wochen–Monate" },
+        { t: "Qualitätsbestimmung", s: "mehrere Qualitäten" },
+        { t: "Kammertrocknung", s: "nur ein Teil der Menge" },
+        { t: "Endgültige Qualitätskontrolle", s: "" },
+        { t: "Verkauf an den Kunden", s: "" }
+      ],
+      sumline: function (sum) { return "Summe der eingegebenen Anteile: " + sum + " % → normalisiert auf 100 %"; },
+      resultsHint: function (m3str) { return "Pro " + m3str + " eingesetztem Rundholz — Einstands- und Verkaufspreis je Produkt."; },
+      kpiRawNote: function (m3str, costStr) { return "Davon Einkaufs- und Sortierkosten für die " + m3str + " Rundholz: " + costStr; },
+      rowOvn: function (vol, premium, cost) { return "Kammertrocknungszuschlag (" + vol + " m³, +" + premium + "% Preis, +" + cost + " €/m³ Kosten)"; },
+      rowNet: function (m3str) { return "Deckungsbeitrag insgesamt, " + m3str + " Rundholz eingesetzt"; }
+    }
+  };
+
+  var currentLang = "da";
+  function L(key) { return T[currentLang][key]; }
+
+  var FIXED_CODE = { "1st": "1★", "2st": "2★", "3st": "3★", "4st": "4★", "sve": "JS", "bp": "BP" };
+  var DEFAULTS = [
+    { id: "1st", key: "cls1", color: "#7ea997", text: "#1c2620", pct: 17, price: 220 },
+    { id: "2st", key: "cls2", color: "#5f9484", text: "#f4f7f5", pct: 28, price: 380 },
+    { id: "3st", key: "cls3", color: "#417d6d", text: "#f4f7f5", pct: 22, price: 600 },
+    { id: "4st", key: "cls4", color: "#2a5c4f", text: "#f4f7f5", pct: 12, price: 820 },
+    { id: "sve", key: "cls5", color: "#8c6a3f", text: "#f4f7f5", pct: 15, price: 480 },
+    { id: "bp",  key: "cls6", color: "#b8863b", text: "#3a2a10", pct: 6,  price: 1150 }
   ];
-  var DEFAULT_CLASS_PCT   = [17, 28, 22, 12, 15, 6];
-  var DEFAULT_CLASS_PRICE = [220, 380, 600, 820, 480, 1150];
+  var EXTRA_PALETTE = [
+    { color: "#6b7fa3", text: "#f4f7f5" },
+    { color: "#a35f6b", text: "#f4f7f5" },
+    { color: "#7a8c3f", text: "#1c2620" },
+    { color: "#c2703f", text: "#2a1608" },
+    { color: "#5a7a8c", text: "#f4f7f5" },
+    { color: "#8c5a8c", text: "#f4f7f5" }
+  ];
 
   var VINTOENDE_COLOR = "#c79a4b", VINTOENDE_TEXT = "#3a2a10";
   var BRAENDE_COLOR   = "#8c6a52", BRAENDE_TEXT   = "#f4efe9";
@@ -423,78 +655,122 @@
   ].forEach(function (id) { els[id] = document.getElementById(id); });
 
   var classBody = document.getElementById("classBody");
-  CLASSES.forEach(function (c, i) {
-    var tr = document.createElement("tr");
-    tr.innerHTML =
-      '<td><span class="sw" style="background:' + c.color + '"></span>' + c.name + '</td>' +
-      '<td><input type="number" class="classPct" data-i="' + i + '" min="0" max="100" step="1" value="' + DEFAULT_CLASS_PCT[i] + '"></td>' +
-      '<td><input type="number" class="classPris" data-i="' + i + '" min="0" step="10" value="' + DEFAULT_CLASS_PRICE[i] + '"></td>' +
-      '<td class="mono classM3" data-i="' + i + '">–</td>';
-    classBody.appendChild(tr);
-  });
+  var rowCounter = 0;
 
-  var FLOW = [
-    { t: "Stamme ind", s: "heterogen kvalitet" },
-    { t: "Vurdering &amp; opmærkning", s: "pr. stamme" },
-    { t: "Opdeling", s: "vintønde / brænde-svind / opsavning" },
-    { t: "Opsavning", s: "efter markering" },
-    { t: "Lufttørring", s: "uger–måneder" },
-    { t: "Kvalitetsbestemmelse", s: "6 kvaliteter" },
-    { t: "Ovntørring", s: "kun en del af mængden" },
-    { t: "Endelig kvalitetskontrol", s: "" },
-    { t: "Salg til kunde", s: "" }
-  ];
-  var flowRow = document.getElementById("flowRow");
-  FLOW.forEach(function (f, i) {
-    if (i > 0) {
-      var arrow = document.createElement("div");
-      arrow.className = "farrow";
-      flowRow.appendChild(arrow);
-    }
-    var node = document.createElement("div");
-    node.className = "fnode";
-    node.innerHTML = '<div class="dot">' + (i + 1) + '</div><div class="ftitle">' + f.t + '</div>' + (f.s ? '<div class="fsub">' + f.s + '</div>' : '');
-    flowRow.appendChild(node);
-  });
-
-  function fmtEur(n) { return Math.round(n).toLocaleString("da-DK") + " €"; }
-  function fmtM3(n) { return n.toLocaleString("da-DK", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " m³"; }
-  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
-
-  function getClassInputs() {
-    var pcts = [], prices = [];
-    document.querySelectorAll(".classPct").forEach(function (inp) { pcts[+inp.dataset.i] = parseFloat(inp.value) || 0; });
-    document.querySelectorAll(".classPris").forEach(function (inp) { prices[+inp.dataset.i] = parseFloat(inp.value) || 0; });
-    return { pcts: pcts, prices: prices };
+  function escapeAttr(s) {
+    return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
+
+  function rowHtml(id, name, pct, price, color, text, i18nKey) {
+    return '<tr data-id="' + id + '" data-color="' + color + '" data-text="' + text + '"' + (i18nKey ? ' data-i18n-class="' + i18nKey + '"' : '') + '>' +
+      '<td><span class="sw" style="background:' + color + '"></span><input type="text" class="className" value="' + escapeAttr(name) + '" placeholder="' + escapeAttr(L("placeholderName")) + '"></td>' +
+      '<td><input type="number" class="classPct" min="0" max="100" step="1" value="' + pct + '"></td>' +
+      '<td><input type="number" class="classPris" min="0" step="10" value="' + price + '"></td>' +
+      '<td class="mono classM3">–</td>' +
+      '<td><button type="button" class="row-del" title="' + escapeAttr(L("thFjern")) + '">×</button></td>' +
+      '</tr>';
+  }
+
+  function seedDefaultRows() {
+    classBody.innerHTML = DEFAULTS.map(function (d) {
+      return rowHtml(d.id, T[currentLang][d.key], d.pct, d.price, d.color, d.text, d.key);
+    }).join("");
+  }
+
+  function serializeRows() {
+    var out = [];
+    classBody.querySelectorAll("tr").forEach(function (tr) {
+      out.push({
+        id: tr.dataset.id,
+        name: tr.querySelector(".className").value,
+        pct: tr.querySelector(".classPct").value,
+        price: tr.querySelector(".classPris").value,
+        color: tr.dataset.color,
+        text: tr.dataset.text,
+        key: tr.getAttribute("data-i18n-class") || null
+      });
+    });
+    return out;
+  }
+
+  function rebuildRows(list) {
+    classBody.innerHTML = list.map(function (r) {
+      return rowHtml(r.id, r.name, r.pct, r.price, r.color, r.text, r.key);
+    }).join("");
+  }
+
+  function getRows() {
+    var out = [];
+    classBody.querySelectorAll("tr").forEach(function (tr) {
+      var nameInp = tr.querySelector(".className");
+      var name = nameInp.value;
+      var code = FIXED_CODE[tr.dataset.id] || ((name || "").trim().slice(0, 2).toUpperCase() || "–");
+      out.push({
+        id: tr.dataset.id,
+        name: name,
+        pct: parseFloat(tr.querySelector(".classPct").value) || 0,
+        price: parseFloat(tr.querySelector(".classPris").value) || 0,
+        color: tr.dataset.color,
+        text: tr.dataset.text,
+        code: code,
+        m3cell: tr.querySelector(".classM3")
+      });
+    });
+    return out;
+  }
+
+  var addRowBtn = document.getElementById("addRowBtn");
+  addRowBtn.addEventListener("click", function () {
+    rowCounter++;
+    var pal = EXTRA_PALETTE[(rowCounter - 1) % EXTRA_PALETTE.length];
+    var id = "custom" + rowCounter;
+    classBody.insertAdjacentHTML("beforeend", rowHtml(id, "", 0, 0, pal.color, pal.text, null));
+    render();
+    var newInp = classBody.querySelector('tr[data-id="' + id + '"] .className');
+    if (newInp) newInp.focus();
+  });
+
+  var flowRow = document.getElementById("flowRow");
+  function buildFlow() {
+    flowRow.innerHTML = "";
+    T[currentLang].flow.forEach(function (f, i) {
+      if (i > 0) {
+        var arrow = document.createElement("div");
+        arrow.className = "farrow";
+        flowRow.appendChild(arrow);
+      }
+      var node = document.createElement("div");
+      node.className = "fnode";
+      node.innerHTML = '<div class="dot">' + (i + 1) + '</div><div class="ftitle">' + f.t + '</div>' + (f.s ? '<div class="fsub">' + f.s + '</div>' : '');
+      flowRow.appendChild(node);
+    });
+  }
+
+  function fmtEur(n) { return Math.round(n).toLocaleString(currentLang === "de" ? "de-DE" : "da-DK") + " €"; }
+  function fmtM3(n) { return n.toLocaleString(currentLang === "de" ? "de-DE" : "da-DK", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " m³"; }
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
   function saveState() {
     try {
       var state = {};
       Object.keys(els).forEach(function (id) { state[id] = els[id].value; });
-      state.classPct = getClassInputs().pcts;
-      state.classPris = getClassInputs().prices;
-      localStorage.setItem("egetrae-case-state-v2", JSON.stringify(state));
+      state.rows = serializeRows();
+      state.lang = currentLang;
+      state.rowCounter = rowCounter;
+      localStorage.setItem("egetrae-case-state-v3", JSON.stringify(state));
     } catch (e) {}
   }
 
   function loadState() {
     try {
-      var raw = localStorage.getItem("egetrae-case-state-v2");
+      var raw = localStorage.getItem("egetrae-case-state-v3");
       if (!raw) return;
       var s = JSON.parse(raw);
       if (!s) return;
       Object.keys(els).forEach(function (id) { if (s[id] !== undefined) els[id].value = s[id]; });
-      if (Array.isArray(s.classPct)) {
-        document.querySelectorAll(".classPct").forEach(function (inp) {
-          var v = s.classPct[+inp.dataset.i]; if (v !== undefined) inp.value = v;
-        });
-      }
-      if (Array.isArray(s.classPris)) {
-        document.querySelectorAll(".classPris").forEach(function (inp) {
-          var v = s.classPris[+inp.dataset.i]; if (v !== undefined) inp.value = v;
-        });
-      }
+      if (s.lang === "da" || s.lang === "de") currentLang = s.lang;
+      if (Array.isArray(s.rows) && s.rows.length) rebuildRows(s.rows);
+      if (s.rowCounter !== undefined) rowCounter = parseInt(s.rowCounter, 10) || 0;
     } catch (e) {}
   }
 
@@ -567,7 +843,7 @@
 
       var item = document.createElement("div");
       item.className = "item";
-      item.innerHTML = '<span class="sw" style="background:' + seg.color + '"></span>' + seg.name + ' (' + seg.pct.toFixed(1) + '%)';
+      item.innerHTML = '<span class="sw" style="background:' + seg.color + '"></span>' + (seg.name || "–") + ' (' + seg.pct.toFixed(1) + '%)';
       logLegend.appendChild(item);
     });
   }
@@ -614,27 +890,27 @@
     document.getElementById("vintondeM3out").value = fmtM3(vintondeM3);
     document.getElementById("braendeM3out").value = fmtM3(braendeM3);
 
-    var ci = getClassInputs();
-    var sumPct = ci.pcts.reduce(function (a, b) { return a + b; }, 0) || 1;
-    var normPcts = ci.pcts.map(function (p) { return (p / sumPct) * 100; });
+    var rows = getRows();
+    var sumPct = rows.reduce(function (a, r) { return a + r.pct; }, 0) || 1;
 
     var sumLine = document.getElementById("classSumLine");
-    var rawSum = ci.pcts.reduce(function (a, b) { return a + b; }, 0);
-    sumLine.textContent = "Sum af indtastede andele: " + rawSum.toFixed(0) + " % → normaliseret til 100 %";
+    var rawSum = rows.reduce(function (a, r) { return a + r.pct; }, 0);
+    sumLine.textContent = L("sumline")(rawSum.toFixed(0));
     sumLine.className = "sumline" + (Math.abs(rawSum - 100) > 0.5 ? " off" : "");
 
     var classM3 = [], classVal = [], sawnRevenueTotal = 0;
-    CLASSES.forEach(function (c, i) {
-      var m3 = savetM3 * normPcts[i] / 100;
-      var val = m3 * ci.prices[i];
+    rows.forEach(function (r, i) {
+      var normPct = (r.pct / sumPct) * 100;
+      var m3 = savetM3 * normPct / 100;
+      var val = m3 * r.price;
       classM3[i] = m3; classVal[i] = val;
       sawnRevenueTotal += val;
-      document.querySelector('.classM3[data-i="' + i + '"]').textContent = fmtM3(m3);
+      r.m3cell.textContent = fmtM3(m3);
     });
 
     var forarbCostTotal = savetM3 * (opsavningCost + transportCost + sorteringEfterCost);
-    var rawCostSawn = restM3 * kostprisBase; // raw+sorting cost consumed to produce savetM3
-    var kostprisSavetTotal = rawCostSawn + forarbCostTotal; // should equal kostprisSavet * savetM3
+    var rawCostSawn = restM3 * kostprisBase;
+    var kostprisSavetTotal = rawCostSawn + forarbCostTotal;
 
     var kilnVolume = savetM3 * ovnPct / 100;
     var avgSalgsprisSavet = savetM3 > 0 ? sawnRevenueTotal / savetM3 : 0;
@@ -651,46 +927,48 @@
     var margin = totalRevenue > 0 ? (netValue / totalRevenue) * 100 : 0;
 
     document.getElementById("kpiNetTotal").textContent = fmtEur(netValue);
-    document.getElementById("kpiBlended").innerHTML = Math.round(blended).toLocaleString("da-DK") + ' <small>€/m³</small>';
+    document.getElementById("kpiBlended").innerHTML = Math.round(blended).toLocaleString(currentLang === "de" ? "de-DE" : "da-DK") + ' <small>€/m³</small>';
     document.getElementById("kpiMargin").textContent = margin.toFixed(0) + " %";
-    document.getElementById("kpiSavet").innerHTML = savetM3.toLocaleString("da-DK", { maximumFractionDigits: 0 }) + ' <small>m³</small>';
-    document.getElementById("kpiRawNote").textContent = "Heraf indkøbs- og sorteringsomkostning på de " + fmtM3(INPUT_M3) + " rundtømmer: " + fmtEur(kostprisBase * INPUT_M3);
-    document.getElementById("resultsHint").textContent = "Pr. " + fmtM3(INPUT_M3) + " rundtømmer ind — kostpris og salgspris pr. produkt.";
+    document.getElementById("kpiSavet").innerHTML = savetM3.toLocaleString(currentLang === "de" ? "de-DE" : "da-DK", { maximumFractionDigits: 0 }) + ' <small>m³</small>';
+    document.getElementById("kpiRawNote").textContent = L("kpiRawNote")(fmtM3(INPUT_M3), fmtEur(kostprisBase * INPUT_M3));
+    document.getElementById("resultsHint").textContent = L("resultsHint")(fmtM3(INPUT_M3));
 
     var rb = document.getElementById("resultsBody");
-    var rows = [];
-    rows.push({ label: "Vintønde", m3: vintondeM3, kost: kostprisBase, pris: vintondePris, val: vintondeRevenue });
-    rows.push({ label: "Brænde / svind", m3: braendeM3, kost: kostprisBase, pris: braendePris, val: braendeRevenue });
-    CLASSES.forEach(function (c, i) {
-      rows.push({ label: c.name, m3: classM3[i], kost: kostprisSavet, pris: ci.prices[i], val: classVal[i] });
+    var rrows = [];
+    rrows.push({ label: L("vintH3"), m3: vintondeM3, kost: kostprisBase, pris: vintondePris, val: vintondeRevenue });
+    rrows.push({ label: L("braendeH3"), m3: braendeM3, kost: kostprisBase, pris: braendePris, val: braendeRevenue });
+    rows.forEach(function (r, i) {
+      rrows.push({ label: r.name || "–", m3: classM3[i], kost: kostprisSavet, pris: r.price, val: classVal[i] });
     });
-    var html = rows.map(function (r) {
+    var locale = currentLang === "de" ? "de-DE" : "da-DK";
+    var html = rrows.map(function (r) {
       var dbPrM3 = r.pris - r.kost;
       var dbTotal = r.m3 * dbPrM3;
       var dbPct = r.pris > 0 ? (dbPrM3 / r.pris) * 100 : 0;
-      return '<tr><td>' + r.label + '</td><td class="num">' + fmtM3(r.m3) + '</td><td class="num">' + Math.round(r.kost).toLocaleString("da-DK") + '</td><td class="num">' + Math.round(r.pris).toLocaleString("da-DK") + '</td><td class="num">' + Math.round(dbPrM3).toLocaleString("da-DK") + '</td><td class="num">' + dbPct.toFixed(0) + ' %</td><td class="num">' + fmtEur(dbTotal) + '</td></tr>';
+      return '<tr><td>' + r.label + '</td><td class="num">' + fmtM3(r.m3) + '</td><td class="num">' + Math.round(r.kost).toLocaleString(locale) + '</td><td class="num">' + Math.round(r.pris).toLocaleString(locale) + '</td><td class="num">' + Math.round(dbPrM3).toLocaleString(locale) + '</td><td class="num">' + dbPct.toFixed(0) + ' %</td><td class="num">' + fmtEur(dbTotal) + '</td></tr>';
     }).join("");
     var svindVolumen = restM3 - savetM3;
     var totalSalgsmaengde = vintondeM3 + braendeM3 + savetM3;
-    var sumKostBelob = rows.reduce(function (s, r) { return s + r.m3 * r.kost; }, 0);
-    var sumSalgBelob = rows.reduce(function (s, r) { return s + r.m3 * r.pris; }, 0);
+    var sumKostBelob = rrows.reduce(function (s, r) { return s + r.m3 * r.kost; }, 0);
+    var sumSalgBelob = rrows.reduce(function (s, r) { return s + r.m3 * r.pris; }, 0);
     var avgKost = totalSalgsmaengde > 0 ? sumKostBelob / totalSalgsmaengde : 0;
     var avgSalg = totalSalgsmaengde > 0 ? sumSalgBelob / totalSalgsmaengde : 0;
     var avgDB = avgSalg - avgKost;
     var avgDBpct = avgSalg > 0 ? (avgDB / avgSalg) * 100 : 0;
     var avgDBtotal = sumSalgBelob - sumKostBelob;
-    html += '<tr class="subtotal"><td>Totalt svind (opsavning, lufttørring og ovntørring)</td><td class="num">' + fmtM3(svindVolumen) + '</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td></tr>';
-    html += '<tr class="subtotal"><td>Solgte cbm (i alt) — gennemsnit</td><td class="num">' + fmtM3(totalSalgsmaengde) + '</td><td class="num">' + Math.round(avgKost).toLocaleString("da-DK") + '</td><td class="num">' + Math.round(avgSalg).toLocaleString("da-DK") + '</td><td class="num">' + Math.round(avgDB).toLocaleString("da-DK") + '</td><td class="num">' + avgDBpct.toFixed(0) + ' %</td><td class="num">' + fmtEur(avgDBtotal) + '</td></tr>';
-    html += '<tr class="subtotal"><td>Ovntørringstillæg (' + kilnVolume.toFixed(1) + ' m³, +' + ovnPremium + '% pris, +' + Math.round(ovnCost).toLocaleString("da-DK") + ' €/m³ omk.)</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">' + fmtEur(kilnExtraRevenue - kilnCostTotal) + '</td></tr>';
-    html += '<tr class="net"><td>Dækningsbidrag i alt, ' + fmtM3(INPUT_M3) + ' rundtømmer ind</td><td class="num">' + fmtM3(INPUT_M3) + '</td><td class="num">–</td><td class="num">–</td><td class="num">' + Math.round(blended).toLocaleString("da-DK") + '</td><td class="num">' + margin.toFixed(0) + ' %</td><td class="num">' + fmtEur(netValue) + '</td></tr>';
+    html += '<tr class="subtotal"><td>' + L("lblSvind") + '</td><td class="num">' + fmtM3(svindVolumen) + '</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td></tr>';
+    html += '<tr class="subtotal"><td>' + L("rowSolgte") + '</td><td class="num">' + fmtM3(totalSalgsmaengde) + '</td><td class="num">' + Math.round(avgKost).toLocaleString(locale) + '</td><td class="num">' + Math.round(avgSalg).toLocaleString(locale) + '</td><td class="num">' + Math.round(avgDB).toLocaleString(locale) + '</td><td class="num">' + avgDBpct.toFixed(0) + ' %</td><td class="num">' + fmtEur(avgDBtotal) + '</td></tr>';
+    html += '<tr class="subtotal"><td>' + L("rowOvn")(kilnVolume.toFixed(1), ovnPremium, Math.round(ovnCost).toLocaleString(locale)) + '</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">' + fmtEur(kilnExtraRevenue - kilnCostTotal) + '</td></tr>';
+    html += '<tr class="net"><td>' + L("rowNet")(fmtM3(INPUT_M3)) + '</td><td class="num">' + fmtM3(INPUT_M3) + '</td><td class="num">–</td><td class="num">–</td><td class="num">' + Math.round(blended).toLocaleString(locale) + '</td><td class="num">' + margin.toFixed(0) + ' %</td><td class="num">' + fmtEur(netValue) + '</td></tr>';
     rb.innerHTML = html;
 
     var segments = [
-      { pct: vintondePct, color: VINTOENDE_COLOR, text: VINTOENDE_TEXT, code: "V", name: "Vintønde" },
-      { pct: braendePct, color: BRAENDE_COLOR, text: BRAENDE_TEXT, code: "B/S", name: "Brænde / svind" }
+      { pct: vintondePct, color: VINTOENDE_COLOR, text: VINTOENDE_TEXT, code: "V", name: L("vintH3") },
+      { pct: braendePct, color: BRAENDE_COLOR, text: BRAENDE_TEXT, code: "B/S", name: L("braendeH3") }
     ];
-    CLASSES.forEach(function (c, i) {
-      segments.push({ pct: restPct * normPcts[i] / 100, color: c.color, text: c.text, code: c.code, name: c.name });
+    rows.forEach(function (r) {
+      var normPct = (r.pct / sumPct) * 100;
+      segments.push({ pct: restPct * normPct / 100, color: r.color, text: r.text, code: r.code, name: r.name });
     });
     drawLog(segments);
 
@@ -701,6 +979,15 @@
     if (e.target.closest("section")) render();
   });
 
+  classBody.addEventListener("click", function (e) {
+    var btn = e.target.closest(".row-del");
+    if (btn) {
+      var tr = btn.closest("tr");
+      if (tr) tr.remove();
+      render();
+    }
+  });
+
   document.querySelectorAll(".preset-btn").forEach(function (btn) {
     btn.addEventListener("click", function () {
       els.totalM3.value = btn.dataset.v;
@@ -709,7 +996,7 @@
   });
 
   document.getElementById("resetBtn").addEventListener("click", function () {
-    try { localStorage.removeItem("egetrae-case-state-v2"); } catch (err) {}
+    try { localStorage.removeItem("egetrae-case-state-v3"); } catch (err) {}
     els.totalM3.value = 100;
     els.kostprisRund.value = 160; els.sorteringCost.value = 10;
     els.opsavningCost.value = 45; els.transportCost.value = 15; els.sorteringEfterCost.value = 12;
@@ -717,12 +1004,122 @@
     els.vintondePct.value = 8; els.vintondePris.value = 2400;
     els.braendePct.value = 15; els.braendePris.value = 50;
     els.ovnPct.value = 35; els.ovnCost.value = 90; els.ovnPremium.value = 12;
-    document.querySelectorAll(".classPct").forEach(function (inp) { inp.value = DEFAULT_CLASS_PCT[+inp.dataset.i]; });
-    document.querySelectorAll(".classPris").forEach(function (inp) { inp.value = DEFAULT_CLASS_PRICE[+inp.dataset.i]; });
+    rowCounter = 0;
+    seedDefaultRows();
     render();
   });
 
+  // ---------- Language ----------
+  function applyLang() {
+    document.querySelectorAll("[data-i18n]").forEach(function (el) {
+      var key = el.getAttribute("data-i18n");
+      var val = T[currentLang][key];
+      if (typeof val === "string") el.textContent = val;
+    });
+    document.getElementById("logSvg").setAttribute("aria-label", L("svgAria"));
+    document.getElementById("langDaBtn").classList.toggle("active", currentLang === "da");
+    document.getElementById("langDeBtn").classList.toggle("active", currentLang === "de");
+    document.querySelectorAll(".className").forEach(function (inp) { inp.placeholder = L("placeholderName"); });
+    document.querySelectorAll(".row-del").forEach(function (btn) { btn.title = L("thFjern"); });
+    document.documentElement.lang = currentLang;
+    buildFlow();
+  }
+
+  function switchLang(newLang) {
+    if (newLang === currentLang) return;
+    document.querySelectorAll('#classBody tr[data-i18n-class]').forEach(function (tr) {
+      var key = tr.getAttribute("data-i18n-class");
+      var inp = tr.querySelector(".className");
+      if (inp.value === T[currentLang][key]) inp.value = T[newLang][key];
+    });
+    currentLang = newLang;
+    applyLang();
+    render();
+  }
+  document.getElementById("langDaBtn").addEventListener("click", function () { switchLang("da"); });
+  document.getElementById("langDeBtn").addEventListener("click", function () { switchLang("de"); });
+
+  // ---------- Export to Excel ----------
+  var exportStatus = document.getElementById("exportStatus");
+
+  function fallbackDownload(blob, filename) {
+    try {
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+      exportStatus.textContent = L("exportSaved");
+    } catch (e) {
+      exportStatus.textContent = L("exportError");
+    }
+  }
+
+  function buildWorkbook() {
+    var rows = getRows();
+    var wb = XLSX.utils.book_new();
+
+    var aoaAssump = [
+      [L("sheetAssumptions")],
+      [],
+      [L("totalLabel"), parseFloat(els.totalM3.value) || 0, "m³"],
+      [L("lblKostprisRund"), parseFloat(els.kostprisRund.value) || 0, "€/m³"],
+      [L("lblSorteringCost"), parseFloat(els.sorteringCost.value) || 0, "€/m³"],
+      [L("lblOpsavning"), parseFloat(els.opsavningCost.value) || 0, "€/m³"],
+      [L("lblTransport"), parseFloat(els.transportCost.value) || 0, "€/m³"],
+      [L("lblSorteringEfter"), parseFloat(els.sorteringEfterCost.value) || 0, "€/m³"],
+      [L("lblSvind"), parseFloat(els.svindPct.value) || 0, "%"],
+      [L("vintH3"), parseFloat(els.vintondePct.value) || 0, "%", parseFloat(els.vintondePris.value) || 0, "€/m³"],
+      [L("braendeH3"), parseFloat(els.braendePct.value) || 0, "%", parseFloat(els.braendePris.value) || 0, "€/m³"],
+      [L("lblOvnPct"), parseFloat(els.ovnPct.value) || 0, "%"],
+      [L("lblOvnCost"), parseFloat(els.ovnCost.value) || 0, "€/m³"],
+      [L("lblOvnPremium"), parseFloat(els.ovnPremium.value) || 0, "%"]
+    ];
+    var ws1 = XLSX.utils.aoa_to_sheet(aoaAssump);
+    XLSX.utils.book_append_sheet(wb, ws1, L("sheetAssumptions").substring(0, 31));
+
+    var aoaQual = [[L("thKvalitet"), L("thAndelSavet"), L("thSalgspris")]];
+    rows.forEach(function (r) { aoaQual.push([r.name, r.pct, r.price]); });
+    var ws2 = XLSX.utils.aoa_to_sheet(aoaQual);
+    XLSX.utils.book_append_sheet(wb, ws2, L("sheetQualities").substring(0, 31));
+
+    var ws3 = XLSX.utils.table_to_sheet(document.querySelector("table.results"));
+    XLSX.utils.book_append_sheet(wb, ws3, L("sheetResults").substring(0, 31));
+
+    return wb;
+  }
+
+  document.getElementById("exportBtn").addEventListener("click", function () {
+    exportStatus.textContent = "";
+    if (typeof XLSX === "undefined") {
+      exportStatus.textContent = L("exportError");
+      return;
+    }
+    var wb = buildWorkbook();
+    var wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    var blob = new Blob([new Uint8Array(wbout)], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    var filename = "egestammens-vaerdikaede.xlsx";
+
+    if (window.claude && typeof window.claude.use === "function") {
+      window.claude.use("downloads").then(function (d) {
+        if (!d) { fallbackDownload(blob, filename); return; }
+        d.save({ filename: filename, data: blob }).then(function () {
+          exportStatus.textContent = L("exportSaved");
+        }, function (err) {
+          if (err && err.code === "declined") exportStatus.textContent = L("exportDeclined");
+          else fallbackDownload(blob, filename);
+        });
+      }).catch(function () { fallbackDownload(blob, filename); });
+    } else {
+      fallbackDownload(blob, filename);
+    }
+  });
+
+  // ---------- Init ----------
+  seedDefaultRows();
+  buildFlow();
   loadState();
+  applyLang();
   render();
 })();
 </script>
